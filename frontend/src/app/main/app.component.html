@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<body class = elegant-color-dark>
+    <html lang="en">
+    <!-- ********************************* HEADER *******************************************-->
+    
+    <div class="col">
+      <div class="col-md-100">
+  
+          <!--Card Primary-->
+          <nav class="navbar elegant-color-dark text-left z-depth-2">
+              <div class="card-body">
+                <!-- <a 
+                href= "https://microgravityuniversity.jsc.nasa.gov/nasasuits.cfm"><strong class="white-text">NASA SUITS</strong>
+              </a> -->
+              <img src="https://www.nasa.gov/sites/all/themes/custom/nasatwo/images/nasa-logo.svg" style="width:75px;height:75px;" class="img-fluid float-right" alt="placeholder">
+              
+              </div>
+          </nav>
+
+        <!--Jumbotron-->
+    <div class="jumbotron text-center elegant-color">
+        <div class="view">
+            <img src="https://microgravityuniversity.jsc.nasa.gov/img/suits/NASASUITS-logo.png" class="img-fluid" alt="placeholder">
+            <div class="mask flex-center waves-effect waves-light rgba-black-light">
+                <h1
+                class="d-flex justify-content-center white-text"><strong>NASA S.U.I.T.S. 2019 | <br></strong>
+              </h1>
+              <h3
+              class="white-text mb-8 font-bold">
+              Command Central
+            </h3>
+            </div>
+          </div>
+  </div>
+
+  <!-- ********************************* HEADER *******************************************-->
+
+
+    <!-- ********************************* UIA ELEMENTS *******************************************-->
+	<div class = "col">
+      <div class=" row jumbotron text-center elegant-color">
+        <div class = "col-md-6">
+        <div class = "jumbotron elegant-color-dark " style = "height: 100% "> 
+        <br><br>
+        <h1 class="h1-responsive white-text">UIA Control</h1>
+        <hr class="my-2 white">
+        <br> 
+        <br>
+        <button (click)="startUiaSimulation()"  style ="width:30%" class="btn success-color btn-lg">START</button>
+        <button (click)="pauseUiaSimulation()" style ="width:30%"class="btn btn-primary btn-lg" role="button">PAUSE  </button>  
+        <br>
+        <button (click) ="stopUiaSimulation()" style ="width:30%" class="btn btn-danger btn-lg" role="button">STOP</button>
+        <button (click)="resumeUiaSimulation()" style ="width:30%" class="btn success-color-dark btn-lg" role="button">RESUME </button> 
+        </div>
+        </div> 
+        
+        <div class = "col-md-6">
+            <div class = "jumbotron elegant-color-dark " style = "height: 100% "> 
+              <h1 class = "text-center white-text">UIA</h1>
+          <div >  
+              <br>
+               <table  class="table text-left grey-text">
+              <thead *ngFor = "let uia of uias" >
+              </thead>
+              <tbody> 
+                <tr>
+                  <td>EMU1</td>
+                  <td *ngFor = "let uia of uias">{{uia.emu1}}</td>
+                </tr>
+                <tr>
+                  <td>EMU2</td>
+                  <td *ngFor = "let uia of uias">{{uia.emu2}}</td>
+                </tr>
+                <tr >
+                  <td>EV1 SUPPLY</td>
+                  <td  *ngFor = "let uia of uias" >{{uia.ev1_supply}}</td>
+                </tr>     
+                <tr >
+                  <td>EV2 SUPPLY</td>
+                  <td  *ngFor = "let uia of uias" >{{uia.ev2_supply}}</td>
+                </tr>          
+                <tr>
+                  <td>EV1 WASTE</td>
+                    <td  *ngFor = "let uia of uias" >{{uia.ev1_waste}}</td>
+                  </tr>     
+                  <tr>
+                    <td>EV2 WASTE</td>
+                    <td  *ngFor = "let uia of uias" >{{uia.ev2_waste}}</td>
+                  </tr>  
+ 
+                  <tr>
+                    <td>EV1 OXYGEN</td>
+                    <td  *ngFor = "let uia of uias" >{{uia.emu1_O2}}</td>
+                  </tr> 
+                  
+                  <tr>
+                        <td>EV2 OXYGEN</td>
+                        <td  *ngFor = "let uia of uias" >{{uia.emu2_O2}}</td>
+                      </tr>     
+                <tr>
+                  <td>O2 VENT</td>
+                  <td *ngFor = "let uia of uias" >{{uia.O2_vent}} </td>
+                </tr>
+                <tr>
+                    <tr>
+                        <td>DEPRESS PUMP</td>
+                        <td *ngFor = "let uia of uias" >{{uia.depress_pump}} </td>
+                      </tr>
+                      <tr>
+                    <td>EMU1 O2 PRESSURE</td>
+                    <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out1}} psi</td>
+                  </tr>
+                  <tr>
+                      <td>EMU2 O2 PRESSURE</td>
+                      <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out2}} psi</td>
+                    </tr>
+              </tbody> 
+            </table>
+          </div>
+      </div>
+      </div>
+    </div>
+</div>  
+
+  <!-- ********************************* UIA AND DCU CONTROLLERS *******************************************-->
+<div class = "col">
+  <nav class=" navbar navbar-expand-lg navbar-dark elegant-color-dark">
+      <a routerLink ="/" class="navbar-brand" href="">CONTROLLERS</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a routerLink ="/uia" class="nav-link"  href="#">UIA CONTROLLER</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink ="/dcu" class="nav-link" href="#">DCU CONTROLLER</a>
+          </li>
+          <li class="nav-item">
+              <a routerLink ="/" class="nav-link" href="#">CLOSE CONTROLLER</a>
+            </li>
+        </ul>
+      </div>
+    </nav>
+  <router-outlet></router-outlet>
+  <app-messages></app-messages>
+  <br><br>
+  </div>
+
+  <!-- ********************************* MISSION CONTROL AND SUIT TELEMETRY STREAM *******************************************-->
+
+  	<div class = "col">
+      <div class="jumbotron text-center elegant-color">
+        <div class = "jumbotron elegant-color-dark" >
+          <h1 class="h1-responsive white-text">Mission Control</h1>
+          <hr class="my-2 white">
+          <br> 
+          <br>
+          <button (click)="startSimulation()"  style ="width:18%" class="btn success-color btn-lg">START</button>
+          <button (click)="pauseSimulation()" style ="width:18%"class="btn btn-primary btn-lg" role="button">PAUSE</button>  
+          <button (click)="errFunc()" style ="width:18%" class="btn warning-color btn-lg" role="button">ERROR</button>
+          <br>
+          <button (click) ="stopSimulation(); refresh() "  routerLink ="/" class="nav-link" href="#" style ="width:18%" class="btn btn-danger btn-lg" role="button">STOP/RESET</button>
+          <button (click)="resumeSimulation()" style ="width:18%" class="btn success-color-dark btn-lg" role="button">RESUME </button> 
+          <button (click)="resErr()" style ="width:18%" class="btn primary-color-dark btn-lg" role="button">RESOLVE</button> 
+          <br><br>
+      
+
+      
+
+      <!-- <div>
+      <input type="text" id = "handhold"  value="">
+      <script>
+          function handHold(){
+            var val = prompt('Enter Handhold Value')
+            document.getElementById("handhold").innerHTML = val
+            console.log(val)
+            return val
+          }
+          </script>
+        <button class="btn btn-primary btn-sm" onclick = "handHold()">Submit</button>
+      <br>
+      </div> -->
+
+      <div *ngFor="let telem of telems">  
+          <div class = "jumbotron elegant-color-dark" >
+              <h1 class = "text-center white-text">Telemetry Stream</h1>
+              <br><br>    
+            <table class="table text-left grey-text">
+              <thead>
+          <tr class = "white-text">
+                  <th scope="col">Telemetry</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody> 
+                <tr>
+                  <td>EVA Time</td>
+                  <td>{{telem.timer}}</td>
+                </tr>           
+                <tr>
+                  <td>Primary Oxygen</td>
+                   <td>{{telem.ox_primary}} %</td>
+                <tr>
+                  <td>Secondary Oxygen</td>
+                  <td>{{telem.ox_secondary}} %</td>
+                <tr>
+                  <td>Heart Rate</td>
+                  <td>{{telem.heart_bpm}} bpm</td>
+                </tr>
+                <tr>
+                  <td>Suit Pressure</td>
+                  <td>{{telem.p_suit}} psia</td>
+                </tr>
+                <tr>
+                  <td>Sub Pressure</td>
+                  <td>{{telem.p_sub}} psia</td>
+                </tr>
+
+                <tr>
+                  <td>Fan Tachometer </td>
+                  <td>{{telem.v_fan}} rpm</td>
+                </tr>
+
+                <tr>
+                  <td>O2 Pressure</td>
+                  <td>{{telem.p_o2}} psia</td>
+                </tr>
+
+                <tr>
+                  <td>O2 Rate</td>
+                  <td>{{telem.rate_o2}} psi/min</td>
+                </tr>
+                
+                <tr>
+                  <td>Battery Capacity</td>
+                  <td>{{telem.cap_battery}} amp-hr</td>
+                </tr>
+                <tr>
+                  <td>H2O Gas Pressure</td>
+                  <td>{{telem.p_h2o_g}} psia</td>
+                </tr>
+                <tr>
+                  <td>H2O Liquid Pressure</td>
+                  <td>{{telem.p_h2o_l}} psia</td>
+                </tr>
+                <tr>
+                    <td>Temperature</td>
+                    <td>{{telem.t_sub}} deg F</td>
+                  </tr>
+                <tr>
+                  <td>SOP Pressure</td>
+                  <td>{{telem.p_sop}} psia</td>
+                </tr>
+                <tr>
+                  <td>SOP Rate</td>
+                  <td>{{telem.rate_sop}} psi/min</td>
+                </tr>
+                <tr>
+                  <td>Battery Time Left</td>
+                  <td>{{telem.t_battery}} </td>
+                </tr>
+                <tr>
+                    <td>O2 Time Left</td>
+                    <td>{{telem.t_oxygen}} </td>
+                  </tr>
+                <tr>
+                  <td>H2O Left</td>
+                  <td>{{telem.t_water}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <!-- Footer -->
+<footer class="page-footer font-small elegant-color">
+
+  <!-- Copyright -->
+  <div class="footer-copyright text-center py-3 ">
+    <a href= "https://microgravityuniversity.jsc.nasa.gov/nasasuits.cfm"><strong>NASA SUITS</strong></a>
+  </div>
+  <!-- Copyright -->
+
+</footer>
+<!-- Footer -->
+
+
+
