@@ -8,8 +8,10 @@ const io = require('socket.io')(http); // new Server(server);
 const db = require('../utils/jsondb');
 const dbsetup = require('../setup.json');
 const { info } = require('console');
+let moment = require('moment');
 // const evaSimulation = require('../simulations/evasimulation-rt');
 
+let socketStart = new moment();
 let clients = [];
 let roomDBs = [];
 let suitsDb;
@@ -23,7 +25,7 @@ io.on('connection', (socket) => {
     console.log('a user connected');
     socket.emit('connected', 'hello there');
 
-    socket.emit('ack', socket.id);
+    socket.emit('handshake', socket.id);
 
     // Create a user
     socket.on('register', (data) => {
@@ -42,6 +44,11 @@ io.on('connection', (socket) => {
             socket.emit(`register`, client); // Send the client their info
         }
         
+    });
+
+    socket.on('heartbeat', data => {
+        console.log('Received Heartbeat');
+        socket.emit('heartbeat', { ok: true, u: data.siid, t: new moment()});
     });
 });
 

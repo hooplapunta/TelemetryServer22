@@ -2,23 +2,40 @@
 var io = require('socket.io-client');
 var socket = io.connect('http://localhost:3001', {reconnect: true});
 
+let user = {};
+
 // Add a connect listener
 socket.on('connect', (socket) => {
     console.log('Connected!');
 });
 
-socket.on('ack', (data) => {
-    console.log(data);
-    socket.emit('register', {name: 'test', room: 'alpha'}, (data) => {
-        console.log(`Registering...`); 
-        console.log(data);
-    });
+socket.on('handshake', (data) => {
+    socket.emit('register', {name: 'test', room: 'alpha'});
 });
 
 socket.on('register', (data) => {
     console.log('registered');
+    let user = data;
+    console.log(data);
+
+    // Start the heartbeat
+    emitHb();
+});
+
+// socket.volatile.emit('heartbeat', (answer) => {
+//     console.log(`SUITSHB- ${answer}`);
+// });
+
+socket.on('heartbeat', (data) => {
     console.log(data);
 });
+
+function emitHb() {
+    console.log('sending hb');
+    socket.emit('heartbeat', user);
+
+    setTimeout(emitHb, 3000);
+}
 
 socket.on('disconnect', () => {
     console.log('Disconnected');
