@@ -1,14 +1,16 @@
 const env = require('dotenv').config();
 const express = require('express');
 const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
+const http = require('http').Server(app);
+// const server = http.createServer(app);
+// const { Server } = require("socket.io");
+const io = require('socket.io')(http); // new Server(server);
 const db = require('../utils/jsondb');
 const dbsetup = require('../setup.json');
+const { info } = require('console');
 // const evaSimulation = require('../simulations/evasimulation-rt');
 
+let clients = [];
 let roomDBs = [];
 let suitsDb;
 
@@ -17,9 +19,34 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+    console.log(socket.id);
+    console.log('a user connected');
+    socket.emit('connected', 'hello there');
 
-  socket.emit('connected', 'hello there');
+    socket.emit('ack', socket.id);
+
+    // Create a user
+    socket.on('register', (data) => {
+        
+        console.log('data:');
+        console.log(data.room);
+
+        if(data.room === undefined && data.room === '') {
+            socket.emit(`err`, { ok: false, event: 'register', msg: 'room name required' });
+        } else if(data.name === undefined && data.name === '') {
+            socket.emit(`err`, { ok: false, event: 'register', msg: 'name required' });
+        } else {
+            let client = {id: clients.length + 1, siid: socket.id, name: data.name, room: data.room};
+
+            clients.push(client); // Hold the client in mem
+            socket.emit(`register`, client); // Send the client their info
+        }
+        
+    });
+});
+
+http.listen(3001, () => {
+    console.log('listening on *:3001');
 });
 
 function loadConfig() {
