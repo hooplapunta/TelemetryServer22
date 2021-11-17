@@ -18,6 +18,9 @@ let socketStart = new moment();
 let clients = [];
 let roomDBs = [];
 
+let pushUIANotifier;
+let pushUIAControlsNotifier;
+
 let uiaSim;
 
 app.get('/', (req, res) => {
@@ -33,9 +36,6 @@ io.on('connection', (socket) => {
 
     // Create a user
     socket.on('register', (data) => {
-        
-        console.log('data:');
-        console.log(data.room);
 
         if(data.room === undefined && data.room === '') {
             socket.emit(`err`, { ok: false, event: 'register', msg: 'room name required' });
@@ -49,37 +49,76 @@ io.on('connection', (socket) => {
             clients.push(client); // Hold the client in mem
             socket.emit(`register`, client); // Send the client their info
         }
-        
     });
-
-    socket.on('uiasim', (data) => {
-
-        console.log(data);
-        console.log(roomDBs);
-
+    
+    let roomDB;
+    socket.on('uiasim', (data) => {        
         let client = clients.find( x => x.siid === socket.id);
-        console.log(client);
-        let roomDB = roomDBs.find( x => x.name === data.room);
+        roomDB = roomDBs.find( x => x.name === data.room);
+
         if(roomDB !== undefined) {
-            console.log('----------Simulation Start Event Called----------');
+            console.log('----------Simulation Creation Event Called----------');
             uiaSim = new UIASimulationRT(roomDB);
+
+            // Send SIM Created Event to User In Room
             io.in(data.room).emit('uiasim', { evt: 'simstart', msg: `Simulation started by - ${client.id}-${client.name}-${client.siid}` });
         } else {
             console.warn(`DB Not found!`);
         }
-        // socket.emit('uiasim', 'enabled');
     });
 
     socket.on('uiatoggle', data => {
-        if(data === 'start')
-            uiaSim.uiaStart();
+        switch(data.event) {
+            case 'start':
+                uiaSim.uiaStart();
+                pushUIA(roomDB);
+                break;
+            case 'pause':
+                uiaSim.pause();
+                stopPushUIA();
+                break;
+            case 'unpause':
+                uiaSim.unpause();
+                pushUIA(roomDB);
+                break;
+            case 'stop':
+                uiaSim.stop();
+                stopPushUIA();
+                break;
+        }
+    });
+
+    socket.on('getUIAState', (data) => {
+
+    });
+
+    socket.on('getUIAControls', (data) => {
+
     });
 
     socket.on('heartbeat', data => {
         console.log('Received Heartbeat');
-        socket.emit('heartbeat', { ok: true, u: data.siid, t: new moment()});
+        socket.volatile.emit('heartbeat', { ok: true, u: data.siid, t: new moment()});
+    });
+
+    socket.on('disconnect', data => {
+        console.log('Client disconnected ' + socket.id);
+
+        // remove the client
+        let clientIdx = clients.findIndex(x => x.siid === socket.id);
+        clients.splice(clientIdx, 1);
     });
 });
+
+function pushUIA(roomDB) {
+    pushUIANotifier = setInterval(() => {
+        io.in(roomDB.name).emit('uiadata', roomDB.db.get('uia-simulation'));
+    }, 1000);
+}
+
+function stopPushUIA() {
+    clearInterval(pushUIANotifier);
+}
 
 http.listen(3001, () => {
     console.log('listening on *:3001');

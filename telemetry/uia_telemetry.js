@@ -48,7 +48,6 @@ function emuOnOff(dt, uiaControls, uiaOldSimState) {
 }
 */
 function emu1OnOff(dt, uiaControls, uiaOldSimState) {
-	console.log(uiaControls);
 	let emu1 = uiaControls.emu1
 	let onOff1 = uiaOldSimState.onOff1
 	
@@ -58,6 +57,7 @@ function emu1OnOff(dt, uiaControls, uiaOldSimState) {
 	else {
 		onOff1 = 'OFF'
 	}
+	console.log(onOff1);
 	return onOff1
 }
 function emu2OnOff(dt, uiaControls, uiaOldSimState) {

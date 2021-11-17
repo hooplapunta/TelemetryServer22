@@ -10,6 +10,7 @@
 3. [Requirements](#requirements)
 4. [Operations](#operations)
 5. [Client](#client)
+6. [Glossary](#glossary)
 
 ## Overview 
 SUITS _(Spacesuit User Interface Technologies for Students)_ Telemetry Server is a server-based solution used to generate and distribute data while offering specific real-time data communications - required for student teams to successfully perform the required tasks of the challenge. The server is comprised of open source technologies that are both agnostic in deployment and ubiquitous in distribution. 
@@ -162,7 +163,12 @@ A typical user of the SUITS-TS will follow the preceding workflow.
 
 
 
-
+## Glossary
+1. Client - A device that connects to, and may send or receive data from the server.
+2. DCU: Display and Control Unit
+2. EVA: Extra Vehicular Activity
+3. SUITS: Spacesuit User Interface Technologies for Students
+4. UIA: Umbilical Interface Assembly
 
 
 # EMU_TelemetrySimulator

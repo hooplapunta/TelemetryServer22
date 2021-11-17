@@ -18,17 +18,41 @@ socket.on('register', (data) => {
     let user = data;
     console.log(data);
 
-    // socket.emit('uiasim', 'test');
-    socket.emit('uiasim', {'event': 'start', 'user': user.name, 'room': user.room});
+    // 1. CREATE SIMULATION for ROOM
+    socket.emit('uiasim', {event: 'start', user: user.name, room: user.room});
 
     // Start the heartbeat
     // emitHb();
 });
 
+// UIA Simulation Test
 socket.on('uiasim', (data) => {
     console.log(`${data.evt} ${data.msg}`);
-    // socket.emit('uiatoggle', {'event': 'start', 'user': user.name, 'room': user.room});
+
+    // START UIA SIM
+    socket.emit('uiatoggle', {event: 'start', user: user.name, room: user.room});
+
+    // PAUSE UIA SIM
+    setTimeout(() => {
+        socket.emit('uiatoggle', {event: 'pause', user: user.name, room: user.room});
+        console.log('PAUSE SIM');
+    }, 2000);
+
+    // UNPAUSE UIA SIM
+    setTimeout(() => {
+        socket.emit('uiatoggle', {event: 'unpause', user: user.name, room: user.room});
+        console.log('UPAUSE SIM');
+    }, 4000);
+
+    setTimeout(() => {
+        socket.emit('uiatoggle', {event: 'stop', user: user.name, room: user.room});
+        console.log('STOP SIM');
+    }, 8000);
 });
+
+socket.on('uiadata', (data) => {
+    console.log(`Received data: ${JSON.stringify(data)}`);
+})
 
 // socket.volatile.emit('heartbeat', (answer) => {
 //     console.log(`SUITSHB- ${answer}`);

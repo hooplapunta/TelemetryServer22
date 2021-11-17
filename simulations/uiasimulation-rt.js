@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 class UIASimulationRT {
 
     simTimer = null;
+    tick = null;
     uiaID= null;
     uiaSimStateID = null;
     lastTimestamp = null;
@@ -19,17 +20,20 @@ class UIASimulationRT {
 
         // Gets the initial data object from the JSON db.
         this.simState = this.rmDB.db.get(this.simstateKey);
-        console.log(this.simState);
+        // console.log(this.simState);
     }
 
     isRunning() {
         // return uiaSimStateID !== null && uiaID !== null
         // this.dataObject.is_running = true;
-        return this.simState.is_running;   
+        console.log("SimRunStatus: " + this.uiaSimState.is_running);
+        return this.uiaSimState.is_running;   
     }
 
     isPaused() {
-        return simTimer == null
+        this.simTimer == null;
+
+        return this.uiaSimState.is_paused;
     }
 
     async uiaStart(){
@@ -44,8 +48,9 @@ class UIASimulationRT {
             this.uia = {
                 _id: this.uiaID,
                 is_running: true,
+                is_paused: false,
                 started_at: new Date(),
-                emu1: false,
+                emu1: true,
                 ev1_supply: false,
                 ev1_waste: false,
                 emu1_O2: false,
@@ -59,6 +64,8 @@ class UIASimulationRT {
 
             this.uiaSimState = {
                 _id: uuidv4(),
+                is_running: true,
+                is_paused: false,
                 started_at: new Date(),
                 emu1: 'OFF',
                 emu2: 'OFF',
@@ -77,8 +84,8 @@ class UIASimulationRT {
             };
 
             // Write data to the DB
-            await this.rmDB.db.write(this.simKey, this.uia);
-            await this.rmDB.db.write(this.simstateKey, this.uiaSimState);
+            await this.rmDB.db.write('uia-simulation', this.uia);
+            await this.rmDB.db.write('uia-simstate', this.uiaSimState);
 
             console.log('--------------UIA Simulation Started--------------')
             this.lastTimestamp = Date.now();
@@ -92,10 +99,13 @@ class UIASimulationRT {
     }
 
     pause() {
-        if (!isRunning() || isPaused()) {
+        if (!this.isRunning() || this.isPaused()) {
             throw new Error('Cannot pause: simulation is not running or it is running and is already paused')
         }
         console.log('--------------UIA Simulation Paused-------------')
+        // this.uiaSimState.is_running = false;
+        this.uiaSimState.is_paused = true;
+        this.rmDB.db.write('uia-simstate', this.uiaSimState);
 
         clearInterval(this.simTimer)
         this.simTimer = null 
@@ -103,25 +113,33 @@ class UIASimulationRT {
     }
 
     unpause() {
-        if (!isRunning() || !isPaused()) {
+        if (!this.isRunning() || !this.isPaused()) {
             throw new Error('Cannot unpause: simulation is not running or it is running and is not paused')
         }
-        console.log('--------------UIA Simulation Resumed-------------')
+        console.log('--------------UIA Simulation Resumed-------------');
+        this.uiaSimState.is_paused = !this.uiaSimState.is_paused;
+        this.rmDB.db.write('uia-simstate', this.uiaSimState);
+
         this.lastTimestamp = Date.now()
-        this.simTimer = setInterval(() => this.uiaStep.bind(this), 2000);
+        this.simTimer = setInterval(() => { this.uiaStep(); }, 2000);
     }
 
     //TODO: Do we need a stop? 
     stop() {
-        if (!isRunning()) {
+        if (!this.isRunning()) {
             throw new Error('Cannot stop: simulation is not running')
         }
         console.log('-------------- UIA Simulation Stopped-------------')
-        this.uiaSimStateID = null
-        this.uiaID = null 
-        clearInterval(this.simTimer)
-        this.simTimer = null 
-        this.lastTimestamp = null
+        this.uiaSimState.is_running = false;
+        this.uiaSimState.is_paused = false;
+        this.uia.uiaID = null;
+
+        clearInterval(this.simTimer);
+
+        this.simTimer = null; 
+        this.lastTimestamp = null;
+
+        this.rmDB.db.write('uia-simstate', this.uiaSimState);
     }
 
     async getUIAState() {
@@ -141,7 +159,10 @@ class UIASimulationRT {
 
     async uiaStep() {
 
-        console.log(this.uia);
+        // console.log(this.uia);
+        this.tick++;
+        console.log('tick:: ' + this.tick);
+
         try {
             let uiaSimState = this.uiaSimState;
             let uiaControls = this.uia;
@@ -153,6 +174,7 @@ class UIASimulationRT {
             this.lastTimestamp = now;
 
             const newSimState = simulationStepUIA(dt, uiaControls, uiaSimState);
+            console.log(newSimState);
             Object.assign(uiaSimState, newSimState);
 
             this.rmDB.db.write(this.simstateKey, uiaSimState);
