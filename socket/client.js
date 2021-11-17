@@ -51,8 +51,12 @@ socket.on('uiasim', (data) => {
 });
 
 socket.on('uiadata', (data) => {
-    console.log(`Received data: ${JSON.stringify(data)}`);
-})
+    console.log(`UIA data: ${JSON.stringify(data)}`);
+});
+
+socket.on('uiacontrols', (data) => {
+    console.log(`UIA controls: ${JSON.stringify(data)}`);
+});
 
 // socket.volatile.emit('heartbeat', (answer) => {
 //     console.log(`SUITSHB- ${answer}`);

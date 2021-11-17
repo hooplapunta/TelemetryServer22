@@ -7,6 +7,7 @@ import { FormsModule} from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule} from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router'
+import {  ModalModule } from 'ngx-bootstrap/modal';
 
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -15,6 +16,13 @@ import { AppComponent } from './app.component';
 import { EMUService } from '../services/emu.service';
 import { UIAComponent } from '../controllers/uia/uia.component';
 import { DCUComponent } from '../controllers/dcu/dcu.component';
+
+// Socket Connection
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+
+const SocketConfig: SocketIoConfig = { url: 'http://localhost:3001', options: {
+  transports: ['websocket', 'polling', 'flashsocket']
+} };
 
 const routes: Routes = [
   { path: 'uia', component: UIAComponent },
@@ -41,7 +49,9 @@ const routes: Routes = [
     HttpClientModule,
     MDBBootstrapModule.forRoot(),
     NgbModule.forRoot(),
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    SocketIoModule.forRoot(SocketConfig),
+    ModalModule.forRoot()
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA 
   ],

@@ -11,3 +11,29 @@
 .pad-right{
     margin-right: 0px;
 }
+
+@-webkit-keyframes pulse {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba(22, 244, 77, 0.4);
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px rgba(6, 138, 39, 0.986);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(9, 80, 24, 0);
+    }
+  }
+  @keyframes pulse {
+    0% {
+      -moz-box-shadow: 0 0 0 0 rgba(22, 244, 77, 0.4);
+      box-shadow: 0 0 0 0 rgba(22, 244, 77, 0.4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(6, 138, 39, 0.986);
+        box-shadow: 0 0 0 10px rgba(6, 138, 39, 0.986);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(9, 80, 24, 0);
+        box-shadow: 0 0 0 0 rgba(9, 80, 24, 0);
+    }
+  }

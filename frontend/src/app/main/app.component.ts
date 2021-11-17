@@ -1,76 +1,173 @@
+// Attributions
+// <div>Icons made by <a href="https://www.flaticon.com/authors/bomsymbols" title="BomSymbols">BomSymbols</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
 //Imports list
-import { Component, NgModule} from '@angular/core';
+import { Component, NgModule, OnInit, TemplateRef, ChangeDetectorRef} from '@angular/core';
 import { HttpClient, } from '@angular/common/http';
 import { EMUService } from '../services/emu.service';
+import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { resolveReflectiveProviders } from '@angular/core/src/di/reflective_provider';
+import { Socket } from 'ngx-socket-io';
 
 
 //Variables
 var interval_switch;
 var global_num;
-const url = 'http://localhost:3000'
-const url2 = 'https://suits-2021.herokuapp.com'
+const url = 'http://localhost:3000';
+const url2 = 'https://suits-2021.herokuapp.com';
 
 @Component({  
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-
 })
 
 export class AppComponent {
-  title ='NASA SUITS 2019';
+  title ='NASA SUITS 2021';
   telems: {};
-  uias: {}
+  uias: {};
+  socket;
+  config = false;
+  
+  user = {
+    siid: '',
+    name: '',
+    room: ''
+  };
+  userFrm;
 
-  constructor(private http: HttpClient, private emu: EMUService) {}
+  uiaSubscriber;
+  simInfo;
+  simState;
+  uiaState;
+
+  bsModalRef?: BsModalRef;
+
+  constructor(private http: HttpClient, private emu: EMUService, private modalService: BsModalService, private socketService: Socket, private cdr: ChangeDetectorRef) {}
 
 //*************************************UIA****************************************
 
-ngOnInit(){
-  this.startUiaSimulation()
+ngOnInit() {
+  // this.startUiaSimulation();
+
+  // Connect to service
+  
 }
-refresh(){
+
+refresh() {
   location.reload()
+}
+
+// openConfigModal() {
+//   const initialState: ModalOptions = {
+//     initialState: {
+//       list: [
+//         'Open a modal with component',
+//         'Pass your data',
+//         'Do something else',
+//         '...'
+//       ],
+//       title: 'Modal with component'
+//     }
+//   };
+//   this.bsModalRef = this.modalService.show(ModalContentComponent, initialState);
+//   this.bsModalRef.content.closeBtnName = 'Close';
+// }
+
+toggleConfig() {
+  this.config = !this.config;
+}
+
+updateUser() {
+  // this.user = this.user;
+  this.cdr.detectChanges();
+  this.emu.sDisconnect();
+  this.emu.sConnect();
+
+  this.register();
+}
+
+register() {
+  this.emu.sRegister(this.user.name, this.user.room);
+  this.emu.sGetRegister().subscribe(data => {
+    this.user = data;
+
+    this.createSim();
+  });
+}
+
+createSim() {
+  // Enable the current SIM -- Do this only after the client has registered.
+  this.emu.sEnableUiaSim( this.user.room );
+  this.emu.sUiaSimEnabled().subscribe(data => {
+    this.simInfo = data;
+  });
 }
 
 //STARTS THE UIA SIMULATION 
 startUiaSimulation() {
-  this.http.post(url +'/api/simulation/uiastart',  {
-  })
-  .subscribe(data => {
-  console.log(data);
-  }); 
-  //updates data every 1 second
-  interval_switch = setInterval(() => { this.getUiaData() }, 1000);
-  console.log('server is running...');
+
+  this.simState = 'start';
+  this.emu.sUIAToggle('start');
+
+  this.uiaSubscriber = this.emu.sUIAGetData().subscribe(data => {
+    this.uiaState = data;
+    console.log(this.uiaState);
+  });
+
+  // this.http.post(url +'/api/simulation/uiastart',  {
+  // })
+  // .subscribe(data => {
+  // console.log(data);
+  // }); 
+  // //updates data every 1 second
+  // interval_switch = setInterval(() => { this.getUiaData() }, 1000);
+  // console.log('server is running...');
 }
+
 //STOPS THE SERVER AND DATA STREAM
 stopUiaSimulation() {
-  this.http.post(url + '/api/simulation/uiastop', {
-  })
-  .subscribe(data => {
-  console.log(data);
-  });
-  clearInterval(interval_switch );
-  console.log('uia has stopped');
+  this.simState = 'stop';
+  this.emu.sUIAToggle('stop');
+
+  // Stop getting events
+  this.uiaSubscriber.unsubscribe();
+
+  // this.http.post(url + '/api/simulation/uiastop', {
+  // })
+  // .subscribe(data => {
+  // console.log(data);
+  // });
+  // clearInterval(interval_switch );
+  // console.log('uia has stopped');
+}
+
+pauseUiaSimulation() {
+  this.simState = 'pause';
+  this.emu.sUIAToggle('pause');
 }
 
   //SIMULATION IS PAUSED
-  pauseUiaSimulation(){this.http.post(url + '/api/simulation/uiapause', {
-  })
-  .subscribe(data => {
-  console.log(data);
-  });
+//   pauseUiaSimulation(){
+//     this.http.post(url + '/api/simulation/uiapause', {
+//   })
+//   .subscribe(data => {
+//   console.log(data);
+//   });
+// }
+
+resumeUiaSimulation() {
+  this.simState = 'start';
+  this.emu.sUIAToggle('unpause');
 }
 
 //UiaSIMULATION IS RESUMED
-resumeUiaSimulation(){this.http.post(url + '/api/simulation/uiaunpause', {
-})
-.subscribe(data => {
-console.log(data);
-});
-}
+// resumeUiaSimulation(){this.http.post(url + '/api/simulation/uiaunpause', {
+// })
+// .subscribe(data => {
+// console.log(data);
+// });
+// }
 
 
 //***********************************Telemetry*************************************
@@ -99,18 +196,15 @@ console.log(data);
 
   //SIMULATION IS PAUSED
   pauseSimulation(){this.http.post(url + '/api/simulation/pause', {
-  })
-  .subscribe(data => {
-  console.log(data);
+  }).subscribe(data => {
+    console.log(data);
   });
 }
 
 //SIMULATION IS RESUMED
 resumeSimulation(){this.http.post(url + '/api/simulation/unpause', {
-})
-.subscribe(data => {
-console.log(data);
-});
+}).subscribe(data => {
+  console.log(data); });
 }
 
 //DEPLOYS FAN ERROR
@@ -276,5 +370,20 @@ getUiaData() {
       this.telems = Array.of(this.telems);
       console.log(this.telems)
     });
+  }
+}
+
+
+@Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'demo-modal-service-static',
+  templateUrl: './config-template.html'
+})
+export class DemoModalServiceStaticComponent {
+  modalRef?: BsModalRef;
+  constructor(private modalService: BsModalService) {}
+ 
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
   }
 }

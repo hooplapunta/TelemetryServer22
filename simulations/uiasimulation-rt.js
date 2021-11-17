@@ -50,7 +50,7 @@ class UIASimulationRT {
                 is_running: true,
                 is_paused: false,
                 started_at: new Date(),
-                emu1: true,
+                emu1: false,
                 ev1_supply: false,
                 ev1_waste: false,
                 emu1_O2: false,

@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <body class = elegant-color-dark>
     <html lang="en">
+    <head>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+
     <!-- ********************************* HEADER *******************************************-->
     
     <div class="col">
@@ -9,50 +13,102 @@
           <!--Card Primary-->
           <nav class="navbar elegant-color-dark text-left z-depth-2">
               <div class="card-body">
-                <!-- <a 
-                href= "https://microgravityuniversity.jsc.nasa.gov/nasasuits.cfm"><strong class="white-text">NASA SUITS</strong>
-              </a> -->
-              <img src="https://www.nasa.gov/sites/all/themes/custom/nasatwo/images/nasa-logo.svg" style="width:75px;height:75px;" class="img-fluid float-right" alt="placeholder">
-              
+                <div class="row">             
+                  <div class="col-1">
+                    <img src="https://microgravityuniversity.jsc.nasa.gov/img/suits/NASASUITS-logo.png" style="width: 64px; height: 64px;" class="img-fluid float-left" alt="placeholder">
+                  </div>
+                  <div class="col-9">
+                    <span class="d-flex justify-content-center white-text" style="font-size: 2em; margin-top: 10px;"><strong>NASA S.U.I.T.S. 2019 | Command Central</strong></span>
+                  </div>
+                  <div class="col-1">
+                    <img src="https://www.nasa.gov/sites/all/themes/custom/nasatwo/images/nasa-logo.svg" style="width: 64px; height: 64px;" class="img-fluid float-right" alt="placeholder">
+                  </div>
+                  <div class="col-1">
+                    <button class="btn btn-primary" (click)="toggleConfig()">Cfg</button>
+                  </div>
+                </div>
               </div>
           </nav>
-
-        <!--Jumbotron-->
-    <div class="jumbotron text-center elegant-color">
-        <div class="view">
-            <img src="https://microgravityuniversity.jsc.nasa.gov/img/suits/NASASUITS-logo.png" class="img-fluid" alt="placeholder">
-            <div class="mask flex-center waves-effect waves-light rgba-black-light">
-                <h1
-                class="d-flex justify-content-center white-text"><strong>NASA S.U.I.T.S. 2019 | <br></strong>
-              </h1>
-              <h3
-              class="white-text mb-8 font-bold">
-              Command Central
-            </h3>
-            </div>
-          </div>
-  </div>
+      </div>
+    </div>
 
   <!-- ********************************* HEADER *******************************************-->
 
+<!-- START CONFIG -->
+<div><p style="color: white; margin-left: 15px;"><small>siid:</small> {{user?.siid}} <small>username: </small><span style="color: yellow;">{{user?.name}} </span><small>room: </small><span style="color: yellow;">{{user?.room}}</span></p></div>
+
+<div class="col" *ngIf="config">
+  <div class="row jumbotron text-center elegant-color">
+    
+      <div class="col">
+        <div class="row">
+          <div class="col-12">
+            <div class = "jumbotron elegant-color-dark">
+            <h3 style="color: white;">Configuration</h3>
+            <hr class="my-2 white">
+
+            <div class="row">
+              <div class="col-6">
+
+                <form style="text-align: center;">
+                  <div class="form-group">
+                    <label style="color: white;" for="username">Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="ex. commander" [(ngModel)]="user.name" [ngModelOptions]="{standalone: true}">
+                  </div>
+                  <div class="form-group">
+                    <label style="color: white;" for="exampleInputEmail1">Commanding Room</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Room Name: ex. alpha" [(ngModel)]="user.room" [ngModelOptions]="{standalone: true}">
+                    <small id="emailHelp" class="form-text text-muted">The room name needs to be updated for each team.</small>
+                  </div>
+                  <button type="submit" (click)="updateUser()" class="btn btn-primary">Submit</button>
+                </form>
+
+              </div>
+              <div class="col-6">
+                <form style="text-align: center;">
+                  <div class="form-group">
+                    <label style="color: white;" for="socketUrl">Socket Server URL</label>
+                    <input type="text" class="form-control" id="socketUrl" placeholder="ex. https://localhost:3001">
+                    <small id="emailHelp" class="form-text text-muted">Changing this value could cause loss in connection.</small>
+                  </div>
+                  <button type="button"  class="btn btn-primary">Submit</button>
+                </form>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        </div>
+      </div>
+    
+  </div>
+</div>
+
+
+<!-- END CONFIG -->
 
     <!-- ********************************* UIA ELEMENTS *******************************************-->
 	<div class = "col">
       <div class=" row jumbotron text-center elegant-color">
         <div class = "col-md-6">
-        <div class = "jumbotron elegant-color-dark " style = "height: 100% "> 
-        <br><br>
-        <h1 class="h1-responsive white-text">UIA Control</h1>
-        <hr class="my-2 white">
-        <br> 
-        <br>
-        <button (click)="startUiaSimulation()"  style ="width:30%" class="btn success-color btn-lg">START</button>
-        <button (click)="pauseUiaSimulation()" style ="width:30%"class="btn btn-primary btn-lg" role="button">PAUSE  </button>  
-        <br>
-        <button (click) ="stopUiaSimulation()" style ="width:30%" class="btn btn-danger btn-lg" role="button">STOP</button>
-        <button (click)="resumeUiaSimulation()" style ="width:30%" class="btn success-color-dark btn-lg" role="button">RESUME </button> 
+          <div class = "jumbotron elegant-color-dark " style = "height: 100% "> 
+          <br><br>
+          <h1 class="h1-responsive white-text">UIA Control</h1>
+          <hr class="my-2 white">
+          <br>
+          <span *ngIf="!simInfo" style="color: yellow;">>>Sim Has Not Been Created! Options Disabled<<</span>
+          <span *ngIf="simState === 'start'" style="color: white;"><i style="color: green;" class="fa fa-play pulse"></i> Sim Running</span>
+          <span *ngIf="simState === 'stop'" style="color: white;"><i style="color: red;" class="fa fa-stop"></i> Sim Stopped</span>
+          <span *ngIf="simState === 'pause'" style="color: white;"><i style="color: #4285f4;" class="fa fa-pause"></i> Sim Paused</span>
+          
+          <br>          
+          <button [attr.disabled]="(!simInfo || simState === 'pause' || simState === 'start')? true : null" (click)="startUiaSimulation()" style ="width:30%" class="btn success-color btn-lg">START</button>
+          <button [attr.disabled]="(!simInfo || simState !== 'start' || simState === 'pause')? true : null" (click)="pauseUiaSimulation()" style ="width:30%"class="btn btn-primary btn-lg" role="button">PAUSE  </button>  
+          <br>
+          <button [attr.disabled]="(!simInfo || simState !== 'start' && simState !== 'pause')? true : null" (click) = "stopUiaSimulation()" style ="width:30%" class="btn btn-danger btn-lg" role="button">STOP</button>
+          <button [attr.disabled]="(!simInfo || simState !== 'pause')? true : null" (click) = "resumeUiaSimulation()" style ="width:30%" class="btn success-color-dark btn-lg" role="button">RESUME </button> 
         </div>
-        </div> 
+      </div> 
         
         <div class = "col-md-6">
             <div class = "jumbotron elegant-color-dark " style = "height: 100% "> 
@@ -65,55 +121,67 @@
               <tbody> 
                 <tr>
                   <td>EMU1</td>
-                  <td *ngFor = "let uia of uias">{{uia.emu1}}</td>
+                  <td>{{uiaState?.emu1}}</td>
+                  <!-- <td *ngFor = "let uia of uias">{{uiaState?.emu1}}</td> -->
                 </tr>
                 <tr>
                   <td>EMU2</td>
-                  <td *ngFor = "let uia of uias">{{uia.emu2}}</td>
+                  <td>{{uiaState?.emu1}}</td>
+                  <!-- <td *ngFor = "let uia of uias">{{uiaState?.emu2}}</td> -->
                 </tr>
                 <tr >
                   <td>EV1 SUPPLY</td>
-                  <td  *ngFor = "let uia of uias" >{{uia.ev1_supply}}</td>
+                  <td>{{uiaState?.ev1_supply}}</td>
+                  <!-- <td  *ngFor = "let uia of uias" >{{uiaState?.ev1_supply}}</td> -->
                 </tr>     
                 <tr >
                   <td>EV2 SUPPLY</td>
-                  <td  *ngFor = "let uia of uias" >{{uia.ev2_supply}}</td>
+                  <td>{{uiaState?.ev2_supply}}</td>
+                  <!-- <td  *ngFor = "let uia of uias" >{{uia.ev2_supply}}</td> -->
                 </tr>          
                 <tr>
                   <td>EV1 WASTE</td>
-                    <td  *ngFor = "let uia of uias" >{{uia.ev1_waste}}</td>
+                  <td>{{uiaState?.ev1_waste}}</td>
+                  <!-- <td *ngFor = "let uia of uias" >{{uia.ev1_waste}}</td> -->
                   </tr>     
                   <tr>
                     <td>EV2 WASTE</td>
-                    <td  *ngFor = "let uia of uias" >{{uia.ev2_waste}}</td>
+                    <td>{{uiaState?.ev2_waste}}</td>
+                    <!-- <td *ngFor = "let uia of uias" >{{uia.ev2_waste}}</td> -->
                   </tr>  
  
                   <tr>
                     <td>EV1 OXYGEN</td>
-                    <td  *ngFor = "let uia of uias" >{{uia.emu1_O2}}</td>
+                    <td>{{uiaState?.emu1_O2}}</td>
+                    <!-- <td *ngFor = "let uia of uias" >{{uia.emu1_O2}}</td> -->
                   </tr> 
                   
                   <tr>
-                        <td>EV2 OXYGEN</td>
-                        <td  *ngFor = "let uia of uias" >{{uia.emu2_O2}}</td>
-                      </tr>     
+                    <td>EV2 OXYGEN</td>
+                    <td>{{uiaState?.emu2_O2}}</td>
+                    <!-- <td *ngFor = "let uia of uias" >{{uia.emu2_O2}}</td> -->
+                    </tr>     
                 <tr>
                   <td>O2 VENT</td>
-                  <td *ngFor = "let uia of uias" >{{uia.O2_vent}} </td>
+                  <td>{{uiaState?.O2_vent}}</td>
+                  <!-- <td *ngFor = "let uia of uias" >{{uia.O2_vent}} </td> -->
                 </tr>
                 <tr>
                     <tr>
                         <td>DEPRESS PUMP</td>
-                        <td *ngFor = "let uia of uias" >{{uia.depress_pump}} </td>
-                      </tr>
-                      <tr>
+                        <td>{{uiaState?.depress_pump}}</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.depress_pump}} </td> -->
+                    </tr>
+                <tr>
                     <td>EMU1 O2 PRESSURE</td>
-                    <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out1}} psi</td>
+                    <td>{{uiaState?.oxygen_supp_out1}} psi</td>
+                    <!-- <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out1}} psi</td> -->
                   </tr>
                   <tr>
-                      <td>EMU2 O2 PRESSURE</td>
-                      <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out2}} psi</td>
-                    </tr>
+                    <td>EMU2 O2 PRESSURE</td>
+                    <td>{{uiaState?.oxygen_supp_out2}} psi</td>
+                    <!-- <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out2}} psi</td> -->
+                  </tr>
               </tbody> 
             </table>
           </div>

@@ -2,9 +2,20 @@ const env = require('dotenv').config();
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
+// const cors = require('cors');
+
 // const server = http.createServer(app);
 // const { Server } = require("socket.io");
-const io = require('socket.io')(http); // new Server(server);
+const io = require('socket.io')(http, {
+    cors: {
+        origin: "*:*",
+        methods: ["GET", "POST"],
+        credentials: false
+    }
+});
+
+// io.set('origins', '*localhost:3001');
+
 const db = require('../utils/jsondb');
 const dbsetup = require('../setup.json');
 const { info } = require('console');
@@ -23,6 +34,8 @@ let pushUIAControlsNotifier;
 
 let uiaSim;
 
+// app.use(cors());
+
 app.get('/', (req, res) => {
   res.status(200).send({ ok: true, msg: 'Socket Server Online' });
 });
@@ -32,6 +45,7 @@ io.on('connection', (socket) => {
     console.log('a user connected');
     socket.emit('connected', 'hello there');
 
+    // Client connected, gesture with their new ID.
     socket.emit('handshake', socket.id);
 
     // Create a user
@@ -88,12 +102,8 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('getUIAState', (data) => {
-
-    });
-
-    socket.on('getUIAControls', (data) => {
-
+    socket.on('getclients', (data) => {
+        socket.emit('getclients', { clients });
     });
 
     socket.on('heartbeat', data => {
@@ -112,13 +122,17 @@ io.on('connection', (socket) => {
 
 function pushUIA(roomDB) {
     pushUIANotifier = setInterval(() => {
+        // Sends UIA Data and Controls to room-based listeners of 'uiadata' and 'uiacontrols'
         io.in(roomDB.name).emit('uiadata', roomDB.db.get('uia-simulation'));
+        io.in(roomDB.name).emit('uiacontrols', roomDB.db.get('uia-simstate'));
     }, 1000);
 }
 
+// Terminates Push Interval
 function stopPushUIA() {
     clearInterval(pushUIANotifier);
 }
+
 
 http.listen(3001, () => {
     console.log('listening on *:3001');
