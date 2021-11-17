@@ -8,13 +8,17 @@ const io = require('socket.io')(http); // new Server(server);
 const db = require('../utils/jsondb');
 const dbsetup = require('../setup.json');
 const { info } = require('console');
+
+const UIASimulationRT = require('../simulations/uiasimulation-rt');
+
 let moment = require('moment');
 // const evaSimulation = require('../simulations/evasimulation-rt');
 
 let socketStart = new moment();
 let clients = [];
 let roomDBs = [];
-let suitsDb;
+
+let uiaSim;
 
 app.get('/', (req, res) => {
   res.status(200).send({ ok: true, msg: 'Socket Server Online' });
@@ -40,10 +44,35 @@ io.on('connection', (socket) => {
         } else {
             let client = {id: clients.length + 1, siid: socket.id, name: data.name, room: data.room};
 
+            console.log(`--Client Joining Room ${data.room}--`);
+            socket.join(data.room); // Join the room
             clients.push(client); // Hold the client in mem
             socket.emit(`register`, client); // Send the client their info
         }
         
+    });
+
+    socket.on('uiasim', (data) => {
+
+        console.log(data);
+        console.log(roomDBs);
+
+        let client = clients.find( x => x.siid === socket.id);
+        console.log(client);
+        let roomDB = roomDBs.find( x => x.name === data.room);
+        if(roomDB !== undefined) {
+            console.log('----------Simulation Start Event Called----------');
+            uiaSim = new UIASimulationRT(roomDB);
+            io.in(data.room).emit('uiasim', { evt: 'simstart', msg: `Simulation started by - ${client.id}-${client.name}-${client.siid}` });
+        } else {
+            console.warn(`DB Not found!`);
+        }
+        // socket.emit('uiasim', 'enabled');
+    });
+
+    socket.on('uiatoggle', data => {
+        if(data === 'start')
+            uiaSim.uiaStart();
     });
 
     socket.on('heartbeat', data => {
@@ -54,6 +83,7 @@ io.on('connection', (socket) => {
 
 http.listen(3001, () => {
     console.log('listening on *:3001');
+    loadConfig();
 });
 
 function loadConfig() {

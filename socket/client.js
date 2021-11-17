@@ -18,8 +18,16 @@ socket.on('register', (data) => {
     let user = data;
     console.log(data);
 
+    // socket.emit('uiasim', 'test');
+    socket.emit('uiasim', {'event': 'start', 'user': user.name, 'room': user.room});
+
     // Start the heartbeat
-    emitHb();
+    // emitHb();
+});
+
+socket.on('uiasim', (data) => {
+    console.log(`${data.evt} ${data.msg}`);
+    // socket.emit('uiatoggle', {'event': 'start', 'user': user.name, 'room': user.room});
 });
 
 // socket.volatile.emit('heartbeat', (answer) => {

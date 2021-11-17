@@ -65,4 +65,6 @@ typings/
 dist/
 
 # JSON Data Stores
-db/ 
+db/*
+# Keep the folder, just not the files
+!db/.gitkeep

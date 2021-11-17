@@ -40,6 +40,10 @@ class JSONDB {
         return this.db.has(key);
     }
 
+    writeObj(obj) {
+        return this.db.JSON(obj);
+    }
+
     dump() {
         return this.db.JSON();
     }

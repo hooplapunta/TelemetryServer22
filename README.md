@@ -9,7 +9,7 @@
 2. [Development](#development)
 3. [Requirements](#requirements)
 4. [Operations](#operations)
-
+5. [Client](#client)
 
 ## Overview 
 SUITS _(Spacesuit User Interface Technologies for Students)_ Telemetry Server is a server-based solution used to generate and distribute data while offering specific real-time data communications - required for student teams to successfully perform the required tasks of the challenge. The server is comprised of open source technologies that are both agnostic in deployment and ubiquitous in distribution. 
@@ -146,6 +146,20 @@ _Congratulations! You're off to the races!_
 
 
 -------------------------------------------------------------------------------
+
+## Client
+This section is intended to help developers understand implemetnation and workflow.
+
+### Workflow
+A typical user of the SUITS-TS will follow the preceding workflow.
+
+1. Client creates a connection to the server.
+2. Server sends a _"handshake"_ message to the client.
+3. Client responds to the _"handshake"_ with a _"register"_ event and JSON payload including _name_ and _room_. 
+4. If _name_ or _room_ is missing; _"err"_ will be sent to the Client. However, if successful _"register"_ will be sent to the client.
+5. The client can now choose to use _"hearbeat"_ on an interval no less than every 3 seconds to verify server - client communication.
+
+
 
 
 
