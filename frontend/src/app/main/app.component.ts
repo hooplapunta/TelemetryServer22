@@ -28,12 +28,14 @@ export class AppComponent {
   uias: {};
   socket;
   config = false;
+  keepSettings = true;
   
   user = {
     siid: '',
     name: '',
     room: ''
   };
+
   userFrm;
 
   uiaSubscriber;
@@ -50,29 +52,37 @@ export class AppComponent {
 ngOnInit() {
   // this.startUiaSimulation();
 
-  // Connect to service
+  // Check if keepSettings and user exists in cache
+  let ks = localStorage.getItem('keepsettings');
   
+  console.log('KS - Init: ' + ks);
+
+  if(ks !== null && ks !== undefined) {
+    this.keepSettings = (ks === 'true')? true : false;
+    console.log('ks is not null');
+  }
+
+  console.log('keepsettings: ' + this.keepSettings);
+
+  let user = localStorage.getItem('user');
+  if(this.keepSettings && user !== null) {
+    console.log('Recalling User Settings');
+    this.user = JSON.parse(user);
+
+    // Pre-connect
+    this.register();
+  }
+  
+}
+
+setKeepSetting() {
+  // store value in string format
+  localStorage.setItem('keepsettings', (this.keepSettings)? 'true': 'false');
 }
 
 refresh() {
   location.reload()
 }
-
-// openConfigModal() {
-//   const initialState: ModalOptions = {
-//     initialState: {
-//       list: [
-//         'Open a modal with component',
-//         'Pass your data',
-//         'Do something else',
-//         '...'
-//       ],
-//       title: 'Modal with component'
-//     }
-//   };
-//   this.bsModalRef = this.modalService.show(ModalContentComponent, initialState);
-//   this.bsModalRef.content.closeBtnName = 'Close';
-// }
 
 toggleConfig() {
   this.config = !this.config;
@@ -91,6 +101,10 @@ register() {
   this.emu.sRegister(this.user.name, this.user.room);
   this.emu.sGetRegister().subscribe(data => {
     this.user = data;
+
+    if(this.keepSettings) {
+      localStorage.setItem('user', JSON.stringify(this.user));
+    }
 
     this.createSim();
   });
@@ -214,12 +228,13 @@ resumeSimulation(){this.http.post(url + '/api/simulation/unpause', {
 //********************************************************************** */
 //Error function 
 
-errFunc(){
+errFunc() {
 
- var num: number = Math.floor(Math.random() * 3) + 1 
- global_num = num;
-console.log("In err function number = " + num)
- switch(num){
+  let num: number = Math.floor(Math.random() * 3) + 1 
+  global_num = num;
+
+  console.log("In err function number = " + num)
+  switch(num){
     case 1: {
       console.log("Deploying Fan error")
       this.fanError();       
@@ -243,7 +258,7 @@ console.log("In err function number = " + num)
     default:
       console.log("Error error");
       break;
- }
+  }
   return num;
 }
 //********************************************************************** */

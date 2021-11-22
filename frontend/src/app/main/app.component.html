@@ -60,6 +60,12 @@
                     <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Room Name: ex. alpha" [(ngModel)]="user.room" [ngModelOptions]="{standalone: true}">
                     <small id="emailHelp" class="form-text text-muted">The room name needs to be updated for each team.</small>
                   </div>
+                  <div class="form-group">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="keepSettings" (change)="setKeepSetting()" [ngModelOptions]="{standalone: true}" id="keepSettings">
+                    <label class="form-check-label" style="color: white;" for="keepSettings">
+                      Remember Settings
+                    </label>
+                  </div>
                   <button type="submit" (click)="updateUser()" class="btn btn-primary">Submit</button>
                 </form>
 
@@ -230,9 +236,6 @@
           <button (click)="resumeSimulation()" style ="width:18%" class="btn success-color-dark btn-lg" role="button">RESUME </button> 
           <button (click)="resErr()" style ="width:18%" class="btn primary-color-dark btn-lg" role="button">RESOLVE</button> 
           <br><br>
-      
-
-      
 
       <!-- <div>
       <input type="text" id = "handhold"  value="">
