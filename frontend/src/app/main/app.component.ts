@@ -4,6 +4,7 @@
 //Imports list
 import { Component, NgModule, OnInit, TemplateRef, ChangeDetectorRef, ViewChild, ElementRef} from '@angular/core';
 import { HttpClient, } from '@angular/common/http';
+import { trigger, transition, style, animate, state } from '@angular/animations';
 import { EMUService } from '../services/emu.service';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { resolveReflectiveProviders } from '@angular/core/src/di/reflective_provider';
@@ -20,6 +21,17 @@ const url2 = 'https://suits-2021.herokuapp.com';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  animations: [
+    trigger('heightGrow', [
+        state('closed', style({
+            height: 0,
+        })),
+        state('open', style({
+            height: 482.2 
+        })),
+        transition('* => *', animate(500))
+    ]),
+  ]
 })
 
 export class AppComponent {
@@ -27,7 +39,7 @@ export class AppComponent {
   telems: {};
   uias: {};
   socket;
-  config = false;
+  configWin = 'closed';
   keepSettings = true;
   
   user = {
@@ -92,7 +104,7 @@ refresh() {
 }
 
 toggleConfig() {
-  this.config = !this.config;
+  (this.configWin == "closed") ? this.configWin = "open" : this.configWin = "closed";
 }
 
 updateUser() {

@@ -37,7 +37,7 @@
 <!-- START CONFIG -->
 <div><p style="color: white; margin-left: 15px;"><small>siid:</small> {{user?.siid}} <small>username: </small><span style="color: yellow;">{{user?.name}} </span><small>room: </small><span style="color: yellow;">{{user?.room}}</span></p></div>
 
-<div class="col" *ngIf="config">
+<div class="col" [@heightGrow]="configWin">
   <div class="row jumbotron text-center elegant-color">
     
       <div class="col">
