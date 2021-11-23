@@ -117,79 +117,196 @@
       </div> 
         
         <div class = "col-md-6">
-            <div class = "jumbotron elegant-color-dark " style = "height: 100% "> 
-              <h1 class = "text-center white-text">UIA</h1>
-          <div >  
-              <br>
-               <table  class="table text-left grey-text">
-              <thead *ngFor = "let uia of uias" >
-              </thead>
-              <tbody> 
-                <tr>
-                  <td>EMU1</td>
-                  <td>{{uiaState?.emu1}}</td>
-                  <!-- <td *ngFor = "let uia of uias">{{uiaState?.emu1}}</td> -->
-                </tr>
-                <tr>
-                  <td>EMU2</td>
-                  <td>{{uiaState?.emu1}}</td>
-                  <!-- <td *ngFor = "let uia of uias">{{uiaState?.emu2}}</td> -->
-                </tr>
-                <tr >
-                  <td>EV1 SUPPLY</td>
-                  <td>{{uiaState?.ev1_supply}}</td>
-                  <!-- <td  *ngFor = "let uia of uias" >{{uiaState?.ev1_supply}}</td> -->
-                </tr>     
-                <tr >
-                  <td>EV2 SUPPLY</td>
-                  <td>{{uiaState?.ev2_supply}}</td>
-                  <!-- <td  *ngFor = "let uia of uias" >{{uia.ev2_supply}}</td> -->
-                </tr>          
-                <tr>
-                  <td>EV1 WASTE</td>
-                  <td>{{uiaState?.ev1_waste}}</td>
-                  <!-- <td *ngFor = "let uia of uias" >{{uia.ev1_waste}}</td> -->
-                  </tr>     
-                  <tr>
-                    <td>EV2 WASTE</td>
-                    <td>{{uiaState?.ev2_waste}}</td>
-                    <!-- <td *ngFor = "let uia of uias" >{{uia.ev2_waste}}</td> -->
-                  </tr>  
- 
-                  <tr>
-                    <td>EV1 OXYGEN</td>
-                    <td>{{uiaState?.emu1_O2}}</td>
-                    <!-- <td *ngFor = "let uia of uias" >{{uia.emu1_O2}}</td> -->
-                  </tr> 
-                  
-                  <tr>
-                    <td>EV2 OXYGEN</td>
-                    <td>{{uiaState?.emu2_O2}}</td>
-                    <!-- <td *ngFor = "let uia of uias" >{{uia.emu2_O2}}</td> -->
-                    </tr>     
-                <tr>
-                  <td>O2 VENT</td>
-                  <td>{{uiaState?.O2_vent}}</td>
-                  <!-- <td *ngFor = "let uia of uias" >{{uia.O2_vent}} </td> -->
-                </tr>
-                <tr>
+          <div class = "jumbotron elegant-color-dark " style = "height: 100% ">
+            <div class="row">
+              <div class="col-12">
+                <h1 class = "text-center white-text">UIA</h1>
+              </div>
+            </div>             
+
+            <div class="row">
+              <div class="col-3">
+
+                <mwl-gauge #emu1o2gauge
+                  class="rgauge"
+                  [max]="3600"
+                  [dialStartAngle]="120"
+                  [dialEndAngle]="-30"
+                  [value]="uiaState?.oxygen_supp_out1"
+                  [animated]="true"
+                  [animationDuration]="1"
+                >
+                </mwl-gauge>
+                <span style="color: rgb(160, 160, 160); float: left;">EMU1 O2 Pressure</span>
+
+              </div>
+
+              <div class="col-6"></div>
+
+              <div class="col-3">
+                <div class="row">
+                  <div class="row">
+                    <mwl-gauge
+                      [max]="3600"
+                      [dialStartAngle]="120"
+                      [dialEndAngle]="-30"
+                      [value]="uiaState?.oxygen_supp_out2"
+                      [animated]="true"
+                      [animationDuration]="1">
+                    </mwl-gauge>
+                  </div>
+                  <div class="row">
+                    <div style="color: rgb(160, 160, 160);">EMU2 O2 Pressure</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+              <div>  
+                  <br>
+                  <table  class="table text-left grey-text">
+                  <!-- <thead *ngFor = "let uia of uias" > -->
+                  <thead>
+                    <td>Action</td>
+                    <td>Sensor</td>
+                    <td>Status</td>
+                  </thead>
+                  <tbody> 
                     <tr>
-                        <td>DEPRESS PUMP</td>
-                        <td>{{uiaState?.depress_pump}}</td>
-                        <!-- <td *ngFor = "let uia of uias" >{{uia.depress_pump}} </td> -->
+
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.emu1" (click)="uiaActionControl('emu1', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>EMU1</td>
+                      <td>{{uiaState?.emu1}}</td>
+                      <!-- <td *ngFor = "let uia of uias">{{uiaState?.emu1}}</td> -->
                     </tr>
-                <tr>
-                    <td>EMU1 O2 PRESSURE</td>
-                    <td>{{uiaState?.oxygen_supp_out1}} psi</td>
-                    <!-- <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out1}} psi</td> -->
-                  </tr>
-                  <tr>
-                    <td>EMU2 O2 PRESSURE</td>
-                    <td>{{uiaState?.oxygen_supp_out2}} psi</td>
-                    <!-- <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out2}} psi</td> -->
-                  </tr>
-              </tbody> 
-            </table>
+
+                    <tr>
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.emu2" (click)="uiaActionControl('emu2', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>EMU2</td>
+                      <td>{{uiaState?.emu2}}</td>
+                      <!-- <td *ngFor = "let uia of uias">{{uiaState?.emu2}}</td> -->
+                    </tr>
+
+                    <tr>
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.ev1_supply" (click)="uiaActionControl('ev1_supply', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>EV1 SUPPLY</td>
+                      <td>{{uiaState?.ev1_supply}}</td>
+                      <!-- <td  *ngFor = "let uia of uias" >{{uiaState?.ev1_supply}}</td> -->
+                    </tr>     
+                    <tr>
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.ev2_supply" (click)="uiaActionControl('ev2_supply', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>EV2 SUPPLY</td>
+                      <td>{{uiaState?.ev2_supply}}</td>
+                      <!-- <td  *ngFor = "let uia of uias" >{{uia.ev2_supply}}</td> -->
+                    </tr>          
+                    <tr>
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.ev1_waste" (click)="uiaActionControl('ev1_waste', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>EV1 WASTE</td>
+                      <td>{{uiaState?.ev1_waste}}</td>
+                      <!-- <td *ngFor = "let uia of uias" >{{uia.ev1_waste}}</td> -->
+                      </tr>
+
+                      <tr>
+                        <td class="kpi-col-1">
+                          <label class="switch"> 
+                            <input type="checkbox" [ngModel]="uiaData?.ev2_waste" (click)="uiaActionControl('ev2_waste', $event.target.checked)"/>
+                            <span class="slider round"></span>
+                          </label>
+                        </td>
+                        <td>EV2 WASTE</td>
+                        <td>{{uiaState?.ev2_waste}}</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.ev2_waste}}</td> -->
+                      </tr>  
+    
+                      <tr>
+                        <td class="kpi-col-1">
+                          <label class="switch"> 
+                            <input type="checkbox" [ngModel]="uiaData?.emu1_O2" (click)="uiaActionControl('emu1_O2', $event.target.checked)"/>
+                            <span class="slider round"></span>
+                          </label>
+                        </td>
+                        <td>EV1 OXYGEN</td>
+                        <td>{{uiaState?.emu1_O2}}</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.emu1_O2}}</td> -->
+                      </tr> 
+                      
+                      <tr>
+                        <td class="kpi-col-1">
+                          <label class="switch"> 
+                            <input type="checkbox" [ngModel]="uiaData?.emu2_O2" (click)="uiaActionControl('emu2_O2', $event.target.checked)"/>
+                            <span class="slider round"></span>
+                          </label>
+                        </td>
+                        <td>EV2 OXYGEN</td>
+                        <td>{{uiaState?.emu2_O2}}</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.emu2_O2}}</td> -->
+                        </tr>     
+                    <tr>
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.O2_vent" (click)="uiaActionControl('O2_vent', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>O2 VENT</td>
+                      <td>{{uiaState?.O2_vent}}</td>
+                      <!-- <td *ngFor = "let uia of uias" >{{uia.O2_vent}} </td> -->
+                    </tr>
+                    <tr>
+                        <tr>
+                            <td class="kpi-col-1">
+                              <label class="switch"> 
+                                <input type="checkbox" [ngModel]="uiaData?.depress_pump" (click)="uiaActionControl('depress_pump', $event.target.checked)"/>
+                                <span class="slider round"></span>
+                              </label>
+                            </td>
+                            <td>DEPRESS PUMP</td>
+                            <td>{{uiaState?.depress_pump}}</td>
+                            <!-- <td *ngFor = "let uia of uias" >{{uia.depress_pump}} </td> -->
+                        </tr>
+                    <tr>
+                        <td class="kpi-col-1"></td>
+                        <td>EMU1 O2 PRESSURE</td>
+                        <td>{{uiaState?.oxygen_supp_out1}} psi</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out1}} psi</td> -->
+                      </tr>
+                      <tr>
+                        <td class="kpi-col-1"></td>
+                        <td>EMU2 O2 PRESSURE</td>
+                        <td>{{uiaState?.oxygen_supp_out2}} psi</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out2}} psi</td> -->
+                      </tr>
+                  </tbody> 
+                </table>
+              </div>
+            </div>
           </div>
       </div>
       </div>
@@ -355,6 +472,8 @@
 
 </footer>
 <!-- Footer -->
+
+<script src="../../assets/vendors/gauge.min.js"></script>
 
 
 

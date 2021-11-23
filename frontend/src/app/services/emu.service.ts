@@ -58,6 +58,14 @@ export class EMUService {
     }
 
     sUIAGetData(): Observable<any> {
+        return this.socket.fromEvent('uiadata').pipe(map((data) => data));
+    }
+
+    sUIAGetControls(): Observable<any> {
         return this.socket.fromEvent('uiacontrols').pipe(map((data) => data));
+    }
+
+    sUIAControl(target, enable) {
+        this.socket.emit('uiacontrol', { target, enable });
     }
 }

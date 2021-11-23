@@ -2,6 +2,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { EMUService } from '../../services/emu.service';
 
 const url = 'http://localhost:3000'
 const url2 = 'https://suits-2021.herokuapp.com'
@@ -10,10 +11,11 @@ const url2 = 'https://suits-2021.herokuapp.com'
 	selector: 'uia-root',
 	templateUrl: './uia.component.html',
     styleUrls: ['./uia.component.scss'],
+    providers: [EMUService]
     
 })
 export class UIAComponent {
-    constructor(private router: Router, private http: HttpClient ){
+    constructor(private router: Router, private http: HttpClient, private emuService: EMUService ){
     }
 
     public onClick(){
@@ -41,23 +43,22 @@ THE TELEMETRY VALUES ARE MANIPULATED BY THE STATE (ON OR OFF) OF EACH FUNCTION.
 
     emuOnOff1() {
         this.status1 = !this.status1;
-        if (!this.status1){
-            {this.http.patch(url+'/api/simulation/newuiacontrols?emu1=false', {
-            })
-            .subscribe(data => {
-            console.log(data);
-            });
-            }
-        }
-        else{
-            {this.http.patch(url+'/api/simulation/newuiacontrols?emu1=true', {
-            })
-            .subscribe(data => {
-            console.log(data);
-            });
-            }
+        this.emuService.sUIAControl('emu1', this.status1);
+        
+        // if (!this.status1) {
+        //     { this.http.patch(url+'/api/simulation/newuiacontrols?emu1=false', {})
+        //         .subscribe(data => {
+        //             console.log(data);
+        //         });
+        //     }
+        // } else {
+        //     { this.http.patch(url+'/api/simulation/newuiacontrols?emu1=true', {})
+        //         .subscribe(data => {
+        //             console.log(data);
+        //         });
+        //     }
 
-        }
+        // }
     }
     emuOnOff2() {
         this.status2 = !this.status2;

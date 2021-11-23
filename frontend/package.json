@@ -26,6 +26,7 @@
     "@types/chart.js": "^2.7.28",
     "@types/socket.io-client": "^1.4.32",
     "angular-bootstrap-md": "^6.2.0",
+    "angular-gauge": "^4.0.0",
     "angular5-csv": "^0.2.10",
     "body-parser": "^1.18.3",
     "bootstrap": ">=4.3.1",

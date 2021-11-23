@@ -8,6 +8,7 @@ import { HttpModule } from '@angular/http';
 import { HttpClientModule} from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router'
 import {  ModalModule } from 'ngx-bootstrap/modal';
+import { GaugeModule } from 'angular-gauge';
 
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -51,7 +52,8 @@ const routes: Routes = [
     NgbModule.forRoot(),
     RouterModule.forRoot(routes),
     SocketIoModule.forRoot(SocketConfig),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    GaugeModule.forRoot()
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA 
   ],

@@ -102,6 +102,12 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Accepts target (e.g. target='emu1') & enable (e.g. enable = true)
+    socket.on('uiacontrol', data => {
+        console.log(uiaSim);
+        uiaSim.setUIAControls(data);
+    });
+
     socket.on('getclients', (data) => {
         socket.emit('getclients', { clients });
     });
@@ -167,31 +173,3 @@ function loadConfig() {
         
     });
 }
-
-// server.listen(process.env.SUITS_TS_SOCKET_PORT | 3001, () => {
-//     //suitsDb = new db(__dirname);
-//     loadConfig();
-// });
-
-// server.on("connection", (socket) => {
-//     console.log('A client joined!');
-  
-//     // or with emit() and custom event names
-//     // socket.emit("greetings", "Hey!", { "ms": "jane" }, Buffer.from([4, 3, 3, 1]));
-//     // socket.emit('connect', JSON.stringify({ ok: true, "msg": "Connected!"}));
-//     socket.emit('connected', 'Hello from the otherside');
-  
-//     // handle the event sent with socket.send()
-//     socket.on("message", (data) => {
-//       console.log(data);
-//     });
-  
-//     // handle the event sent with socket.emit()
-//     socket.on("salutations", (elem1, elem2, elem3) => {
-//       console.log(elem1, elem2, elem3);
-//     });
-// });
-
-// server.on("joinroom", (data) => {
-//     console.log(data);
-// });

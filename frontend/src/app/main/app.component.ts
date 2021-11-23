@@ -2,7 +2,7 @@
 // <div>Icons made by <a href="https://www.flaticon.com/authors/bomsymbols" title="BomSymbols">BomSymbols</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 
 //Imports list
-import { Component, NgModule, OnInit, TemplateRef, ChangeDetectorRef} from '@angular/core';
+import { Component, NgModule, OnInit, TemplateRef, ChangeDetectorRef, ViewChild, ElementRef} from '@angular/core';
 import { HttpClient, } from '@angular/common/http';
 import { EMUService } from '../services/emu.service';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
@@ -41,9 +41,12 @@ export class AppComponent {
   uiaSubscriber;
   simInfo;
   simState;
+  uiaData;
   uiaState;
 
   bsModalRef?: BsModalRef;
+
+  @ViewChild('emu1o2gauge') e1o2g;
 
   constructor(private http: HttpClient, private emu: EMUService, private modalService: BsModalService, private socketService: Socket, private cdr: ChangeDetectorRef) {}
 
@@ -72,6 +75,10 @@ ngOnInit() {
     // Pre-connect
     this.register();
   }
+  
+}
+
+ngAfterViewInit() {
   
 }
 
@@ -124,9 +131,14 @@ startUiaSimulation() {
   this.simState = 'start';
   this.emu.sUIAToggle('start');
 
-  this.uiaSubscriber = this.emu.sUIAGetData().subscribe(data => {
+  this.uiaSubscriber = this.emu.sUIAGetControls().subscribe(data => {
     this.uiaState = data;
     console.log(this.uiaState);
+  });
+
+  this.uiaSubscriber = this.emu.sUIAGetData().subscribe(data => {
+    this.uiaData = data;
+    console.log(this.uiaData);
   });
 
   // this.http.post(url +'/api/simulation/uiastart',  {
@@ -220,6 +232,12 @@ resumeSimulation(){this.http.post(url + '/api/simulation/unpause', {
 }).subscribe(data => {
   console.log(data); });
 }
+
+uiaActionControl(sensor, action) {
+  this.emu.sUIAControl(sensor, action);
+    console.log(`${sensor} -> setting to ${action}`);
+}
+
 
 //DEPLOYS FAN ERROR
 //SETS FAN ERROR VALUE TO TRUE, A FAN ERROR IS THEN DEPLOYED

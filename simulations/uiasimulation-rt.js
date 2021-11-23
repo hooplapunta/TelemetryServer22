@@ -151,10 +151,11 @@ class UIASimulationRT {
         return controls 
     }
 
-    // TODO:::
-    async setUIAControls(newControls){
-        const controls = await SimulationUIA.findByIdAndUpdate(uiaID, newControls, {new: true}).exec()
-        return controls 
+    async setUIAControls(newControls) {
+        // const controls = await SimulationUIA.findByIdAndUpdate(uiaID, newControls, {new: true}).exec()
+        this.uia[newControls.target] = newControls.enable;
+        await this.rmDB.db.write('uia-simulation', this.uia);
+        // return controls 
     }
 
     async uiaStep() {
