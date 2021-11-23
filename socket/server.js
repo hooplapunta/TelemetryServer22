@@ -20,10 +20,13 @@ const db = require('../utils/jsondb');
 const dbsetup = require('../setup.json');
 const { info } = require('console');
 
+// Require Simulations
 const UIASimulationRT = require('../simulations/uiasimulation-rt');
+const EVASimulationRT = require('../simulations/evasimulation-rt');
+// END Require Simulations
 
 let moment = require('moment');
-// const evaSimulation = require('../simulations/evasimulation-rt');
+const e = require('express');
 
 let socketStart = new moment();
 let clients = [];
@@ -31,10 +34,11 @@ let roomDBs = [];
 
 let pushUIANotifier;
 let pushUIAControlsNotifier;
+let pushTelemetryNotifier;
 
+// SIM Objects
 let uiaSim;
-
-// app.use(cors());
+let evaSim;
 
 app.get('/', (req, res) => {
   res.status(200).send({ ok: true, msg: 'Socket Server Online' });
@@ -64,8 +68,15 @@ io.on('connection', (socket) => {
             socket.emit(`register`, client); // Send the client their info
         }
     });
+
+    // Return available rooms on request
+    socket.on('getrooms', (data) => {
+        socket.emit('getrooms', roomDBs);
+    });
     
     let roomDB;
+
+    // START UIA SIM Events
     socket.on('uiasim', (data) => {        
         let client = clients.find( x => x.siid === socket.id);
         roomDB = roomDBs.find( x => x.name === data.room);
@@ -108,8 +119,59 @@ io.on('connection', (socket) => {
         uiaSim.setUIAControls(data);
     });
 
+    // END UIA SIM EVENTS
+
+    // START EVA SIM EVENTS
+
+    socket.on('evasim', (data) => {        
+        let client = clients.find( x => x.siid === socket.id);
+        roomDB = roomDBs.find( x => x.name === data.room);
+
+        if(roomDB !== undefined) {
+            console.log('----------EVA Simulation Creation Event Called----------');
+            evaSim = new EVASimulationRT(roomDB);
+
+            // Send SIM Created Event to User In Room
+            io.in(data.room).emit('evasim', { evt: 'simstart', msg: `EVA Simulation started by - ${client.id}-${client.name}-${client.siid}`});
+        } else {
+            console.warn(`DB Not found!`);
+        }
+    });
+
+    socket.on('evatoggle', data => {
+        switch(data.event) {
+            case 'start':
+                evaSim.start();
+                pushTelemetry(roomDB);
+                break;
+            case 'pause':
+                evaSim.pause();
+                stopPushTelemetry();
+                break;
+            case 'unpause':
+                evaSim.unpause();
+                pushTelemetry(roomDB);
+                break;
+            case 'error':
+                evaSim.unpause();
+                // pushUIA(roomDB);
+                break;
+            case 'resolve':
+                evaSim.unpause();
+                // pushUIA(roomDB);
+                break;
+            case 'stop':
+                evaSim.stop();
+                stopPushTelemetry();
+                break;
+        }
+    });
+
+    // END EVA SIM EVENTS
+
+    // DATA EVENTS
     socket.on('getclients', (data) => {
-        socket.emit('getclients', { clients });
+        socket.volatile.emit('getclients', { clients });
     });
 
     socket.on('heartbeat', data => {
@@ -137,6 +199,18 @@ function pushUIA(roomDB) {
 // Terminates Push Interval
 function stopPushUIA() {
     clearInterval(pushUIANotifier);
+}
+
+function pushTelemetry(roomDB) {
+    pushTelemetryNotifier = setInterval(() => {
+        io.in(roomDB.name).volatile.emit('evadata', roomDB.db.get('eva-state'));
+        io.in(roomDB.name).volatile.emit('evacontrol', roomDB.db.get('eva-controls'));
+        io.in(roomDB.name).volatile.emit('evafailure', roomDB.db.get('eva-failure'));
+    }, 1000);
+}
+
+function stopPushTelemetry() {
+    clearInterval(pushTelemetryNotifier);
 }
 
 

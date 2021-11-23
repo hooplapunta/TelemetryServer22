@@ -132,10 +132,11 @@ function waterLife(dt, controls, oldSimState){
 function heartBeat(dt, { fan_switch}, {fan_error}, oldSimState){
 	let hr_max = 0
 	let hr_min = 0
-	if (fan_error === true && !fan_switch ){
-		hr_max = oldSimState.heart_bpm + 2
+	if (fan_error === true && !fan_switch ) {
+		hr_max = oldSimState.heart_bpm + 2;
 		hr_min = oldSimState.heart_bpm
-		if (hr_max === 120){
+		// **NOTE: Changed from === 120 to >= 120 to prevent overrun
+		if (hr_max >= 120) {
 			hr_max = 120 
 			hr_min = 114
 		}
@@ -144,9 +145,26 @@ function heartBeat(dt, { fan_switch}, {fan_error}, oldSimState){
 		hr_max = 93
 		hr_min = 85
 	}
-	const heart_bpm = Math.random() * (hr_max - hr_min) + hr_min
-	let hr_mean = (oldSimState.heart_bpm + heart_bpm) / 2
-	const avg_hr = (heart_bpm + hr_max + hr_mean + hr_min) / 4
+
+	console.log("Heart Rate Range: " + hr_min + " - " + hr_max);
+
+	const heart_bpm = Math.random() * (hr_max - hr_min) + hr_min;
+	console.log("Heart BPM: " + heart_bpm);
+
+	let hr_mean = (Number.parseFloat(oldSimState.heart_bpm) + heart_bpm) / 2;
+	// let hr_mean = (98 + heart_bpm) / 2;
+	let testMean = [oldSimState.heart_bpm, heart_bpm].reduce((a,b) => a + b) / 2;
+
+	console.log(testMean);
+	console.log(hr_mean + ' = ' + oldSimState.heart_bpm + ' + ' + heart_bpm);
+	// console.log( (oldSimState.heart_bpm + heart_bpm) /2 );
+	
+
+	const avg_hr = (heart_bpm + hr_max + hr_mean + hr_min) / 4;
+	//console.log(heart_bpm + ' + ' + hr_max + ' + ' + hr_mean + ' + ' + hr_min)
+
+	console.log(avg_hr);
+
 	return avg_hr.toFixed(0) 
 }
 

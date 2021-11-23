@@ -17,7 +17,10 @@
             "uid": "7ba6d960-11c0-4b3f-b496-77727f69ac1a"
         }
     ],
-    "eva-data": {
+    "room": {
+        "clients": []
+    },
+    "eva-state": {
         "time": 0,
         "timer": "00:00:00", 
         "started_at": "0000-00-00 00:00:00",
@@ -43,6 +46,23 @@
         "t_oxygen": "00:00:00",
         "cap_water": 100,
         "t_water": "00:00:00" },
+    "eva-controls": {
+        "running": false,
+        "paused": false,
+        "started_at": "0000-00-00 00:00:00",
+        "fan_switch": false,
+        "suit_power": false,
+        "o2_switch": false,
+        "aux": false,
+        "rca": false,
+        "pump": false },
+    "eva-failure": {
+        "started_at":"0000-00-00 00:00:00",
+        "o2_error": false,
+        "pump_error": false,
+        "power_error": false,
+        "fan_error": false
+    },
     "uia-simulation": {
         "running": false,
         "started_at": "0000-00-00 00:00:00",

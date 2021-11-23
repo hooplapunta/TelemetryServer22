@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { DEFAULT_VALUE_ACCESSOR } from '@angular/forms/src/directives/default_value_accessor';
 import { getValueInRange } from '@ng-bootstrap/ng-bootstrap/util/util';
 import { Socket } from 'ngx-socket-io';
-import { map } from 'rxjs/operators';
+import { map, retryWhen } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 const url: string = 'http://localhost:3000';
@@ -45,6 +45,23 @@ export class EMUService {
         this.socket.connect();
     }
 
+    sGetRooms() {
+        this.socket.emit('getrooms');
+    }
+
+    sReceiveRooms(): Observable<any> {
+        return this.socket.fromEvent('getrooms').pipe(map((data) => data));
+    }
+
+    sRequestClients() {
+        this.socket.emit('getclients');
+    }
+
+    sGetClients(): Observable<any> {
+        return this.socket.fromEvent('getclients').pipe(map((data) => data));
+    }
+
+    // UIA SIM EVENTS
     sEnableUiaSim(room) {
         this.socket.emit('uiasim', { room });
     }
@@ -68,4 +85,23 @@ export class EMUService {
     sUIAControl(target, enable) {
         this.socket.emit('uiacontrol', { target, enable });
     }
+    // END UIA SIM EVENTS
+
+    // EVA SIM EVENTS
+    sEnableEvaSim(room) {
+        this.socket.emit('evasim', { room });
+    }
+
+    sEvaSimEnabled(): Observable<any> {
+        return this.socket.fromEvent('evasim').pipe(map((data) => data));
+    }
+
+    sEvaToggle(event) {
+        this.socket.emit('evatoggle', { event });
+    }
+
+    sEVAGetData(): Observable<any> {
+        return this.socket.fromEvent('evadata').pipe(map((data) => data));
+    }
+    // END EVA SIM EVENTS
 }

@@ -10,7 +10,7 @@ socket.on('connect', (socket) => {
 });
 
 socket.on('handshake', (data) => {
-    socket.emit('register', {name: 'test', room: 'alpha'});
+    socket.emit('register', {name: 'test', room: 'beta'});
 });
 
 socket.on('register', (data) => {

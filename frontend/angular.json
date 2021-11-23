@@ -40,6 +40,7 @@
             "scripts": [
               "node_modules/chart.js/dist/Chart.js",
               "node_modules/hammerjs/hammer.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "src/assets/vendors/gauge.min.js"
             ]
           },

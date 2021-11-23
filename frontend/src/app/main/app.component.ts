@@ -14,8 +14,6 @@ import { Socket } from 'ngx-socket-io';
 //Variables
 var interval_switch;
 var global_num;
-const url = 'http://localhost:3000';
-const url2 = 'https://suits-2021.herokuapp.com';
 
 @Component({  
   selector: 'app-root',
@@ -42,6 +40,11 @@ export class AppComponent {
   configWin = 'closed';
   keepSettings = true;
   
+  url = 'http://localhost:3000';
+  url2 = 'https://suits-2021.herokuapp.com';
+
+  rooms = [];
+  clients = [];
   user = {
     siid: '',
     name: '',
@@ -49,12 +52,18 @@ export class AppComponent {
   };
 
   userFrm;
-
   uiaSubscriber;
-  simInfo;
+  uiaSimInfo;
+  evaSimInfo;
   simState;
   uiaData;
   uiaState;
+
+  evaTelemSubscriber;
+  evaControlSubscriber;
+  evaTelem;
+  evaControls;
+  evaFailure;
 
   bsModalRef?: BsModalRef;
 
@@ -69,15 +78,22 @@ ngOnInit() {
 
   // Check if keepSettings and user exists in cache
   let ks = localStorage.getItem('keepsettings');
-  
-  console.log('KS - Init: ' + ks);
 
   if(ks !== null && ks !== undefined) {
     this.keepSettings = (ks === 'true')? true : false;
-    console.log('ks is not null');
   }
 
-  console.log('keepsettings: ' + this.keepSettings);
+  // Request / Subscribe to rooms
+  this.emu.sGetRooms();
+  this.emu.sReceiveRooms().subscribe(data => {
+    this.rooms = data;
+    this.cdr.detectChanges();
+  });
+
+  // Subscribe to clients
+  this.emu.sGetClients().subscribe(data => {
+    this.clients = this.groupBy(data.clients, 'room');
+  });
 
   let user = localStorage.getItem('user');
   if(this.keepSettings && user !== null) {
@@ -91,7 +107,9 @@ ngOnInit() {
 }
 
 ngAfterViewInit() {
-  
+  setInterval(() => {
+    this.emu.sRequestClients();
+  }, 3000);
 }
 
 setKeepSetting() {
@@ -131,9 +149,16 @@ register() {
 
 createSim() {
   // Enable the current SIM -- Do this only after the client has registered.
+  // Enable UIA
   this.emu.sEnableUiaSim( this.user.room );
   this.emu.sUiaSimEnabled().subscribe(data => {
-    this.simInfo = data;
+    this.uiaSimInfo = data;
+  });
+
+  // Enable EVA
+  this.emu.sEnableEvaSim( this.user.room );
+  this.emu.sEvaSimEnabled().subscribe(data => {
+    this.evaSimInfo = data;
   });
 }
 
@@ -211,36 +236,47 @@ resumeUiaSimulation() {
 //***********************************Telemetry*************************************
 //STARTS THE SERVER AND DATA STREAM
   startSimulation() {
-    this.http.post(url + '/api/simulation/start',  {
-    })
-    .subscribe(data => {
-    console.log(data);
-    }); 
+
+    this.evaTelemSubscriber = this.emu.sEVAGetData().subscribe(data => {
+      this.evaTelem = data;
+      console.log(this.evaTelem);
+    });
+  //   this.http.post(this.url + '/api/simulation/start',  {
+  //   })
+  //   .subscribe(data => {
+  //   console.log(data);
+  //   }); 
+
     //updates data every 1 second
-    interval_switch = setInterval(() => { this.getData() }, 1000);
-    console.log('server is running...');
-}
+    // interval_switch = setInterval(() => { this.getData() }, 1000);
+    // console.log('server is running...');
+
+    this.emu.sEvaToggle('start');
+
+  }
 
 //STOPS THE SERVER AND DATA STREAM AND REFRESHES THE PAGE 
   stopSimulation() {
-    this.http.post(url + '/api/simulation/stop', {
-    })
-    .subscribe(data => {
-    console.log(data);
-    });
-    clearInterval(interval_switch );
+    this.evaTelemSubscriber.unsubscribe();
+    // this.http.post(this.url + '/api/simulation/stop', {
+    // })
+    // .subscribe(data => {
+    // console.log(data);
+    // });
+    // clearInterval(interval_switch );
+    this.emu.sEvaToggle('stop');
     console.log('server has stopped');
   }
 
   //SIMULATION IS PAUSED
-  pauseSimulation(){this.http.post(url + '/api/simulation/pause', {
+  pauseSimulation(){this.http.post(this.url + '/api/simulation/pause', {
   }).subscribe(data => {
     console.log(data);
   });
 }
 
 //SIMULATION IS RESUMED
-resumeSimulation(){this.http.post(url + '/api/simulation/unpause', {
+resumeSimulation(){this.http.post(this.url + '/api/simulation/unpause', {
 }).subscribe(data => {
   console.log(data); });
 }
@@ -330,28 +366,28 @@ console.log("In resolve function number = " + err);
 
 
 
-fanError(){this.http.patch(url + '/api/simulation/deployerror?fan_error=true', {
+fanError(){this.http.patch(this.url + '/api/simulation/deployerror?fan_error=true', {
   })
   .subscribe(data => {
   console.log(data);
   });
 }
 
-pumpError(){this.http.patch(url + '/api/simulation/deployerror?pump_error=true', {
+pumpError(){this.http.patch(this.url + '/api/simulation/deployerror?pump_error=true', {
 })
 .subscribe(data => {
 console.log(data);
 });
 }
 
-O2Error(){this.http.patch(url + '/api/simulation/deployerror?o2_error=true', {
+O2Error(){this.http.patch(this.url + '/api/simulation/deployerror?o2_error=true', {
 })
 .subscribe(data => {
 console.log(data);
 });
 }
 
-powerError(){this.http.patch(url + '/api/simulation/deployerror?power_error=true', {
+powerError(){this.http.patch(this.url + '/api/simulation/deployerror?power_error=true', {
 })
 .subscribe(data => {
 console.log(data);
@@ -361,28 +397,28 @@ console.log(data);
 //RESOLVES FAN ERROR
 //SETS FAN ERROR VALUE TO FALSE, FAN ERROR IS THEN RESOLVED
 //THE FAN SPEED BEGINS TO DECREASE. 
-resolveFanError(){this.http.patch(url + '/api/simulation/deployerror?fan_error=false', {
+resolveFanError(){this.http.patch(this.url + '/api/simulation/deployerror?fan_error=false', {
 })
 .subscribe(data => {
 console.log(data);
 });
 }
 
-resolvePumpError(){this.http.patch(url + '/api/simulation/deployerror?pump_error=false', {
+resolvePumpError(){this.http.patch(this.url + '/api/simulation/deployerror?pump_error=false', {
 })
 .subscribe(data => {
 console.log(data);
 });
 }
 
-resolveO2Error(){this.http.patch(url + '/api/simulation/deployerror?o2_error=false', {
+resolveO2Error(){this.http.patch(this.url + '/api/simulation/deployerror?o2_error=false', {
 })
 .subscribe(data => {
 console.log(data);
 });
 }
 
-resolvePowerError(){this.http.patch(url + '/api/simulation/deployerror?power_error=false', {
+resolvePowerError(){this.http.patch(this.url + '/api/simulation/deployerror?power_error=false', {
 })
 .subscribe(data => {
 console.log(data);
@@ -390,7 +426,7 @@ console.log(data);
 }
 
 //DEPLOYS FAN ERROR
-setHandHold(val){this.http.patch(url + '/api/simulation/hand-hold?handhold=${val}`', {
+setHandHold(val){this.http.patch(this.url + '/api/simulation/hand-hold?handhold=${val}`', {
 })
 .subscribe(data => {
   console.log(data);
@@ -416,19 +452,11 @@ getUiaData() {
       console.log(this.telems)
     });
   }
-}
 
-
-@Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'demo-modal-service-static',
-  templateUrl: './config-template.html'
-})
-export class DemoModalServiceStaticComponent {
-  modalRef?: BsModalRef;
-  constructor(private modalService: BsModalService) {}
- 
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
+  groupBy(xs, key) {
+    return xs.reduce((rv, x) => {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
   }
 }
