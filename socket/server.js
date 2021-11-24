@@ -167,7 +167,18 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('evaerror', (data) => {
+    socket.on('evacontrol', (data) => {
+        evaSim.setControls({target: data.key, enable: data.val});
+        console.log(`EVA:Control:Room-${roomDB.name}:${data.key},${data.val}`);
+
+        // Options: "fan_switch", "suit_power", "o2_switch", "aux", "rca", "pump" 
+        // let controls = roomDB.db.get('eva-controls');
+        // controls[data.key] = data.val;
+        // roomDB.db.write('eva-controls', controls);
+        // console.log(controls);
+    });
+
+    socket.on('evaerror', (data) => {        
         console.log(`EVAErr in room ${roomDB.name}: ${data.key} - ${data.val}`);
         let failure = roomDB.db.get('eva-failure');
         failure[data.key] = data.val;

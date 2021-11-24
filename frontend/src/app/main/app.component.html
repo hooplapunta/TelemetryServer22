@@ -39,28 +39,24 @@
 <div class="col">
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-      <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
+      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="uia-tab" data-bs-toggle="tab" data-bs-target="#uia" type="button" role="tab" aria-controls="uia" aria-selected="false">UIA</button>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="eva-tab" data-bs-toggle="tab" data-bs-target="#eva" type="button" role="tab" aria-controls="eva" aria-selected="false">EVA</button>
+      <button class="nav-link" id="eva-tab" data-bs-toggle="tab" data-bs-target="#eva" type="button" role="tab" aria-controls="eva" aria-selected="false">EVA</button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab" aria-controls="config" aria-selected="false">Config</button>
     </li>
   </ul>
-  <!-- <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div> -->
   
 
 <div class="tab-content" id="myTabContent">
 
   <!-- Home Tab -->
-  <div class="col tab-pane fade" id="home" role="tabpanel" aria-labelledby="home">
+  <div class="col tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home">
     <div class="row jumbotron text-center elegant-color">
       <div class="col-6">
         <div class = "jumbotron elegant-color-dark " style = "height: 100% ">
@@ -338,7 +334,7 @@
 <!-- END UIA TAB -->
 
 <!-- EVA Tab -->
-<div class="col tab-pane fade show active" id="eva" role="tabpanel" aria-labelledby="eva">
+<div class="col tab-pane fade" id="eva" role="tabpanel" aria-labelledby="eva">
   <div class="row jumbotron text-center elegant-color">
     <div class="col-6">
       <div class = "jumbotron elegant-color-dark " style = "height: 100% ">
@@ -387,13 +383,13 @@
                           </td>
                           <td>
                             <label class="switch float-right">
-                              <input type="checkbox" (click)="suitPower()"/>
+                              <input type="checkbox" (click)="toggleControl('suit_power', $event.target.checked)"/>
                               <span class="slider round"></span>
                             </label>
                           </td>
                           <td>
                             <label class="switch float-left">
-                              <input type="checkbox" (click) = "fanSwitch()">
+                              <input type="checkbox" (click)="toggleControl('fan_switch', $event.target.checked)">
                               <span class="slider round"></span>
                             </label>
                           </td>
@@ -403,13 +399,13 @@
                           <td class="dcu-label">O2 Switch&nbsp;&nbsp;</td>
                           <td>
                             <label class="switch float-right">
-                              <input type="checkbox" (click) ="o2Switch()">
+                              <input type="checkbox" (click)="toggleControl('o2_switch', $event.target.checked)">
                               <span class="slider round"></span>
                             </label>
                           </td>
                           <td>
                             <label class="switch float-left"> 
-                              <input type="checkbox"  (click)="switch5()"/>
+                              <input type="checkbox"  (click)="toggleControl('rca', $event.target.checked)"/>
                               <span class="slider round"></span>
                             </label>
                           </td>
@@ -419,13 +415,13 @@
                           <td class="dcu-label">AUX&nbsp;&nbsp;</td>
                           <td>
                             <label class="switch float-right">
-                              <input type="checkbox" (click) ="switch3()">
+                              <input type="checkbox" (click)="toggleControl('aux', $event.target.checked)">
                               <span class="slider round"></span>
                             </label>
                           </td>
                           <td>
                             <label class="switch float-left">
-                              <input type="checkbox" (click) = "switch4()">
+                              <input type="checkbox" (click)="toggleControl('pump', $event.target.checked)">
                               <span class="slider round"></span>
                             </label>
                           </td>

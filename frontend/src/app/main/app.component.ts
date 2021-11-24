@@ -335,6 +335,10 @@ resErr() {
 }
 //********************************************************************** */
 
+toggleControl(key, val) {
+  this.emu.sEvaControl(key, val);
+}
+
 sendError(errorKey, val) {
   this.emu.sEvaError(errorKey, val);
 }

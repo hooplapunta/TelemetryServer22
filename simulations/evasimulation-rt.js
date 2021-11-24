@@ -176,13 +176,13 @@ class EVASimulationRT {
         await this.rmDB.db.write('eva-controls', this.control);
 	}
 
-	async step(){
-		try{
+	async step() {
+		try {
 			const simState = this.state; // await SimulationState.findById(simStateID).exec()
 			const controls = this.control; // await SimulationControl.findById(controlID).exec()
 			const failure  = this.failure; // await SimulationFailure.findById(failureID).exec()
 
-			console.log(this.failure);
+			// console.log(this.failure);
 
 			const now = Date.now();
 			const dt = now - this.lastTimestamp; 
@@ -191,8 +191,7 @@ class EVASimulationRT {
 			Object.assign(simState, newSimState);
 			this.rmDB.db.write('eva-state', simState);
 			// await simState.save();
-		}
-		catch(error){ 
+		} catch(error) { 
 			console.error('failed error')
 			console.error(error.toString())
 		}

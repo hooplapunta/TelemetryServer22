@@ -107,5 +107,13 @@ export class EMUService {
     sEvaError(key, val) {
         this.socket.emit('evaerror', {key, val});
     }
+
+    sEvaControl(key, val) {
+        this.socket.emit('evacontrol', {key, val});
+    }
     // END EVA SIM EVENTS
+
+    sGenericEmit(listener, data) {
+        this.socket.emit(listener, data);
+    }
 }
