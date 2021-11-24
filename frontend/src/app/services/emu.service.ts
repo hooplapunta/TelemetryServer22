@@ -103,5 +103,9 @@ export class EMUService {
     sEVAGetData(): Observable<any> {
         return this.socket.fromEvent('evadata').pipe(map((data) => data));
     }
+
+    sEvaError(key, val) {
+        this.socket.emit('evaerror', {key, val});
+    }
     // END EVA SIM EVENTS
 }

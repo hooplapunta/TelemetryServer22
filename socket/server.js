@@ -167,6 +167,13 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('evaerror', (data) => {
+        console.log(`EVAErr in room ${roomDB.name}: ${data.key} - ${data.val}`);
+        let failure = roomDB.db.get('eva-failure');
+        failure[data.key] = data.val;
+        roomDB.db.write(failure);
+    });
+
     // END EVA SIM EVENTS
 
     // DATA EVENTS

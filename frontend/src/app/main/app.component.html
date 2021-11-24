@@ -125,7 +125,7 @@
           <h1 class="h1-responsive white-text">UIA Control</h1>
           <hr class="my-2 white">
           <br>
-          <span *ngIf="!evaSimInfo" style="color: yellow;">>>Sim Has Not Been Created! Options Disabled<<</span>
+          <span *ngIf="!uiaSimInfo" style="color: yellow;">>>UIA Sim Has Not Been Created! Options Disabled<<</span>
           <span *ngIf="simState === 'start'" style="color: white;"><i style="color: green;" class="fa fa-play pulse"></i> Sim Running</span>
           <span *ngIf="simState === 'stop'" style="color: white;"><i style="color: red;" class="fa fa-stop"></i> Sim Stopped</span>
           <span *ngIf="simState === 'pause'" style="color: white;"><i style="color: #4285f4;" class="fa fa-pause"></i> Sim Paused</span>
@@ -350,15 +350,21 @@
               <div class="col-12">
                 <div class="row">
                   <div class="col-12">
-                    <h3 class="subtitle">Sim Controls</h3>                    
+                    <h3 class="subtitle">Sim Controls</h3>      
+                    
+                    <span *ngIf="!evaSimInfo" style="color: yellow;">>>Sim Has Not Been Created! Options Disabled<<</span>
+                    <span *ngIf="evaSimState === 'start'" style="color: white;"><i style="color: green;" class="fa fa-play pulse"></i> Sim Running</span>
+                    <span *ngIf="evaSimState === 'stop'" style="color: white;"><i style="color: red;" class="fa fa-stop"></i> Sim Stopped</span>
+                    <span *ngIf="evaSimState === 'pause'" style="color: white;"><i style="color: #4285f4;" class="fa fa-pause"></i> Sim Paused</span>
+                    <br/>
 
-                    <button style="width: 25%;" (click)="startSimulation()" class="btn success-color btn-lg">START</button>
-                    <button style="width: 25%;" (click)="pauseSimulation()" class="btn btn-primary btn-lg" role="button">PAUSE</button>  
-                    <button style="width: 25%;" (click)="errFunc()" class="btn warning-color btn-lg" role="button">ERROR</button>
+                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo && evaSimState === 'pause' || evaSimState === 'start')" (click)="startSimulation()" class="btn success-color btn-lg">START</button>
+                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo || evaSimState !== 'start' || evaSimState === 'pause')" (click)="pauseSimulation()" class="btn btn-primary btn-lg">PAUSE</button>  
+                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo)" (click)="errFunc()" class="btn warning-color btn-lg">ERROR</button>
                     <br>
-                    <button style="width: 25%;" (click) ="stopSimulation(); refresh() "  routerLink ="/" class="nav-link" href="#" class="btn btn-danger btn-lg" role="button">STOP/RESET</button>
-                    <button style="width: 25%;" (click)="resumeSimulation()" class="btn success-color-dark btn-lg" role="button">RESUME </button> 
-                    <button style="width: 25%;" (click)="resErr()" class="btn primary-color-dark btn-lg" role="button">RESOLVE</button> 
+                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo || evaSimState !== 'start' && evaSimState !== 'pause')" (click) ="stopSimulation();" class="btn btn-danger btn-lg">STOP / RESET</button>
+                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo || evaSimState !== 'pause')" (click)="resumeSimulation()" class="btn success-color-dark btn-lg" >RESUME </button> 
+                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo)" (click)="resErr()" class="btn primary-color-dark btn-lg">RESOLVE</button> 
 
                   </div>
                 </div>

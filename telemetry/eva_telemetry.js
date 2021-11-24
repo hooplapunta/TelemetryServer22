@@ -59,7 +59,7 @@ function missionTimer(dt , controls, oldSimState){
 
 function batteryStep(dt, { suit_power }, oldSimState){
 	const drainRate = 100 / (4 * 60 * 60) // 4 hours of life (%/s)
-	let batteryPercent = oldSimState.batteryPercent
+	let batteryPercent = Number.parseFloat(oldSimState.batteryPercent);
 	const amountDrained = drainRate * (dt / 1000) // %
 	const t_battery = secondsToHms(batteryPercent / drainRate) // s
 	const battery_out = Math.floor(batteryPercent)
@@ -120,7 +120,7 @@ function oxygenLife(dt, { O2_switch }, oldSimState){
 
 function waterLife(dt, controls, oldSimState){
 	const drainRate = 100 / (5.5 * 60 * 60) // 5.5 hours of life (%/s)
-	let cap_water = oldSimState.cap_water
+	let cap_water = Number.parseFloat(oldSimState.cap_water);
 	const amountDrained = drainRate * (dt / 1000) // %
 	const t_water = secondsToHms(cap_water / drainRate) // s
 	cap_water = cap_water - amountDrained// %
@@ -133,8 +133,8 @@ function heartBeat(dt, { fan_switch}, {fan_error}, oldSimState){
 	let hr_max = 0
 	let hr_min = 0
 	if (fan_error === true && !fan_switch ) {
-		hr_max = oldSimState.heart_bpm + 2;
-		hr_min = oldSimState.heart_bpm
+		hr_max = Number.parseFloat(oldSimState.heart_bpm) + 2;
+		hr_min = Number.parseFloat(oldSimState.heart_bpm);
 		// **NOTE: Changed from === 120 to >= 120 to prevent overrun
 		if (hr_max >= 120) {
 			hr_max = 120 
@@ -146,24 +146,9 @@ function heartBeat(dt, { fan_switch}, {fan_error}, oldSimState){
 		hr_min = 85
 	}
 
-	console.log("Heart Rate Range: " + hr_min + " - " + hr_max);
-
 	const heart_bpm = Math.random() * (hr_max - hr_min) + hr_min;
-	console.log("Heart BPM: " + heart_bpm);
-
 	let hr_mean = (Number.parseFloat(oldSimState.heart_bpm) + heart_bpm) / 2;
-	// let hr_mean = (98 + heart_bpm) / 2;
-	let testMean = [oldSimState.heart_bpm, heart_bpm].reduce((a,b) => a + b) / 2;
-
-	console.log(testMean);
-	console.log(hr_mean + ' = ' + oldSimState.heart_bpm + ' + ' + heart_bpm);
-	// console.log( (oldSimState.heart_bpm + heart_bpm) /2 );
-	
-
-	const avg_hr = (heart_bpm + hr_max + hr_mean + hr_min) / 4;
-	//console.log(heart_bpm + ' + ' + hr_max + ' + ' + hr_mean + ' + ' + hr_min)
-
-	console.log(avg_hr);
+	const avg_hr = (heart_bpm + hr_max + hr_mean + hr_min) / 4;	
 
 	return avg_hr.toFixed(0) 
 }
@@ -202,7 +187,7 @@ function tempSub(){
 }
 
 function velocFan(dt, { fan_switch, suit_power }, {power_error, fan_error}, oldSimState){
-	let v_fan = oldSimState.v_fan
+	let v_fan = Number.parseFloat(oldSimState.v_fan);
 	let fan_max = 0
 	let fan_min = 0
 	if (fan_error === true && fan_switch === false) { 
@@ -217,12 +202,12 @@ function velocFan(dt, { fan_switch, suit_power }, {power_error, fan_error}, oldS
 	// 	v_fan = 0
 	// }
 	//return (v_fan/1000).toFixed(2)
-	v_fan = Math.random() * (fan_max - fan_min) + fan_min
+	v_fan = Math.random() * (fan_max - fan_min) + fan_min;
 	return v_fan.toFixed(0)
 }
 
 function pressureOxygen(dt, {o2_switch}, {o2_error}, oldSimState){
-	let p_o2 = oldSimState.p_o2
+	let p_o2 = Number.parseFloat(oldSimState.p_o2);
 	let p_o2_avg = 0;
 	let oxPressure_max = 780 
 	let oxPressure_min = 770

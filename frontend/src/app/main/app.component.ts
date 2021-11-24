@@ -33,6 +33,7 @@ var global_num;
 })
 
 export class AppComponent {
+
   title ='NASA SUITS 2021';
   telems: {};
   uias: {};
@@ -40,7 +41,7 @@ export class AppComponent {
   configWin = 'closed';
   keepSettings = true;
   
-  url = 'http://localhost:3000';
+  url =  'http://localhost:3000';
   url2 = 'https://suits-2021.herokuapp.com';
 
   rooms = [];
@@ -54,22 +55,25 @@ export class AppComponent {
   userFrm;
   uiaSubscriber;
   uiaSimInfo;
-  evaSimInfo;
-  simState;
+  simState; // Determine current operational state
   uiaData;
   uiaState;
 
-  evaTelemSubscriber;
-  evaControlSubscriber;
-  evaTelem;
-  evaControls;
-  evaFailure;
+  evaSimInfo = null;    // Basic info that tells us the sim was created
+  evaSimState;          // Determine current operational state
+  evaTelemSubscriber;   // Data subscriber for push events
+  evaControlSubscriber; // Data subscriber for push events
+  evaTelem;             // Telemetry Data
+  evaControls;          // Control Data
+  evaFailure;           // Failure Data
 
-  bsModalRef?: BsModalRef;
+  errs = ['o2_error', 'pump_error', 'power_error', 'fan_error'];
 
-  @ViewChild('emu1o2gauge') e1o2g;
-
-  constructor(private http: HttpClient, private emu: EMUService, private modalService: BsModalService, private socketService: Socket, private cdr: ChangeDetectorRef) {}
+  constructor( private http: HttpClient, 
+    private emu: EMUService, 
+    private modalService: BsModalService, 
+    private socketService: Socket, 
+    private cdr: ChangeDetectorRef ) {}
 
 //*************************************UIA****************************************
 
@@ -117,6 +121,7 @@ setKeepSetting() {
   localStorage.setItem('keepsettings', (this.keepSettings)? 'true': 'false');
 }
 
+// We don't want to do this, or we will lose connection with the socket.
 refresh() {
   location.reload()
 }
@@ -158,7 +163,10 @@ createSim() {
   // Enable EVA
   this.emu.sEnableEvaSim( this.user.room );
   this.emu.sEvaSimEnabled().subscribe(data => {
+    console.log(this.evaSimInfo);
     this.evaSimInfo = data;
+    this.cdr.detectChanges();
+    console.log(this.evaSimInfo);
   });
 }
 
@@ -236,7 +244,7 @@ resumeUiaSimulation() {
 //***********************************Telemetry*************************************
 //STARTS THE SERVER AND DATA STREAM
   startSimulation() {
-
+    this.evaSimState = 'start';
     this.evaTelemSubscriber = this.emu.sEVAGetData().subscribe(data => {
       this.evaTelem = data;
       console.log(this.evaTelem);
@@ -257,6 +265,7 @@ resumeUiaSimulation() {
 
 //STOPS THE SERVER AND DATA STREAM AND REFRESHES THE PAGE 
   stopSimulation() {
+    this.evaSimState = 'stop';
     this.evaTelemSubscriber.unsubscribe();
     // this.http.post(this.url + '/api/simulation/stop', {
     // })
@@ -269,16 +278,23 @@ resumeUiaSimulation() {
   }
 
   //SIMULATION IS PAUSED
-  pauseSimulation(){this.http.post(this.url + '/api/simulation/pause', {
-  }).subscribe(data => {
-    console.log(data);
-  });
+  pauseSimulation() {
+    this.evaSimState = 'pause';
+    this.emu.sEvaToggle('pause');
+
+    // this.http.post(this.url + '/api/simulation/pause', {
+    //   }).subscribe(data => {
+    //     console.log(data);
+    // });
 }
 
 //SIMULATION IS RESUMED
-resumeSimulation(){this.http.post(this.url + '/api/simulation/unpause', {
-}).subscribe(data => {
-  console.log(data); });
+resumeSimulation() {
+  this.evaSimState = 'unpause';
+  this.emu.sEvaToggle('unpause');
+  // this.http.post(this.url + '/api/simulation/unpause', {
+  //   }).subscribe(data => {
+  //     console.log(data); });
 }
 
 uiaActionControl(sensor, action) {
@@ -296,102 +312,59 @@ uiaActionControl(sensor, action) {
 
 errFunc() {
 
-  let num: number = Math.floor(Math.random() * 3) + 1 
+  let num: number = Math.floor(Math.random() * 3) + 1;
   global_num = num;
 
+  let err = this.errs[global_num];
   console.log("In err function number = " + num)
-  switch(num){
-    case 1: {
-      console.log("Deploying Fan error")
-      this.fanError();       
-      break;
-    }
-    case 2: {
-      console.log("Deploying o2_error")
-      this.O2Error();       
-      break;
-    }
-    case 3: {
-      console.log("Deploying pump_error")
-      this.pumpError();       
-      break;
-    }
-    case 4: {
-      console.log("Deploying power_error")
-      this.powerError();       
-      break;
-    }
-    default:
-      console.log("Error error");
-      break;
-  }
+  
+  // Send the error- let the server do the work
+  this.emu.sEvaError(err, true);
+
   return num;
 }
 //********************************************************************** */
 
 //********************************************************************** */
 //Resolve Error
-resErr(){
-  const err = global_num;
-console.log("In resolve function number = " + err);
-  switch(err){
-    case 1: {
-      console.log("Resolving Fan error")
-      this.resolveFanError();       
-      break;
-    }
-    case 2: {
-      console.log("Resolving o2_error")
-      this.resolveO2Error();       
-      break;
-    }
-    case 3: {
-      console.log("Resolving pump_error")
-      this.resolvePumpError();       
-      break;
-    }
-    case 4: {
-      console.log("Resolving power_error")
-      this.resolvePumpError();       
-      break;
-    }
-    default:{
-        console.log("Resolve Error");
-        break;
-    }
-  }
+resErr() {
+  console.log("In resolve function number = " + global_num);
 
+  let err = this.errs[global_num];
+  this.emu.sEvaError(err, false);
 }
 //********************************************************************** */
 
+sendError(errorKey, val) {
+  this.emu.sEvaError(errorKey, val);
+}
 
-
-fanError(){this.http.patch(this.url + '/api/simulation/deployerror?fan_error=true', {
-  })
+fanError(){this.http.patch(
+  this.url + '/api/simulation/deployerror?fan_error=true', {})
   .subscribe(data => {
-  console.log(data);
+    console.log(data);
   });
 }
 
-pumpError(){this.http.patch(this.url + '/api/simulation/deployerror?pump_error=true', {
-})
-.subscribe(data => {
-console.log(data);
-});
+pumpError(){this.http.patch(
+  this.url + '/api/simulation/deployerror?pump_error=true', {})
+  .subscribe(data => {
+    console.log(data);
+  });
 }
 
-O2Error(){this.http.patch(this.url + '/api/simulation/deployerror?o2_error=true', {
-})
-.subscribe(data => {
-console.log(data);
-});
+O2Error(){this.http.patch(
+  this.url + '/api/simulation/deployerror?o2_error=true', {})
+  .subscribe(data => {
+    console.log(data);
+  });
 }
 
-powerError(){this.http.patch(this.url + '/api/simulation/deployerror?power_error=true', {
-})
-.subscribe(data => {
-console.log(data);
-});
+powerError(){
+  this.http.patch(this.url + '/api/simulation/deployerror?power_error=true', {})
+  .subscribe(data => {
+    console.log(data);
+  });
 }
 
 //RESOLVES FAN ERROR

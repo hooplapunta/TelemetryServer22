@@ -182,11 +182,12 @@ class EVASimulationRT {
 			const controls = this.control; // await SimulationControl.findById(controlID).exec()
 			const failure  = this.failure; // await SimulationFailure.findById(failureID).exec()
 
+			console.log(this.failure);
+
 			const now = Date.now();
 			const dt = now - this.lastTimestamp; 
 			this.lastTimestamp = now;
 			const newSimState = simulationStep(dt, controls, failure, simState);
-			console.log(newSimState);
 			Object.assign(simState, newSimState);
 			this.rmDB.db.write('eva-state', simState);
 			// await simState.save();
