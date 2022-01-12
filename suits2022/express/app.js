@@ -2,7 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const routes = {
+	auth: require('./routes/auth'),
+	locations: require('./routes/location'),
 	roles: require('./routes/role'),
+	rooms: require('./routes/room'),
 	users: require('./routes/users'),
 	simulationcontrol: require('./routes/simulationcontrol'),
 	simulationstate: require('./routes/simulationstate'),
@@ -38,6 +41,14 @@ app.get('/', (req, res) => {
 
 // We define the standard REST APIs for each route (if they exist).
 for (const [routeName, routeController] of Object.entries(routes)) {
+
+	// Auth Stuff
+	if(routeController.registerUser) {
+		app.post(`/api/${routeName}/register`, 
+			makeHandlerAwareOfAsyncErrors(routeController.registerUser));
+	}
+
+
 	if (routeController.getAll) {
 		app.get(
 			`/api/${routeName}`,
@@ -54,6 +65,12 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 		app.get(
 			`/api/${routeName}/room/:room`,
 			makeHandlerAwareOfAsyncErrors(routeController.getByRoomId)
+		)
+	}
+	if(routeController.getByUserId) {
+		app.get(
+			`/api/${routeName}/user/:user`,
+			makeHandlerAwareOfAsyncErrors(routeController.getByUserId)
 		)
 	}
 	if (routeController.create) {

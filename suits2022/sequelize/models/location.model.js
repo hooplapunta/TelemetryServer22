@@ -16,6 +16,10 @@ module.exports = (sequelize) => {
             allowNull: false,
             type: DataTypes.INTEGER
         },
+		room: {
+			allowNull: false,
+            type: DataTypes.INTEGER
+		},
 		latitude: {
 			allowNull: false,
 			type: DataTypes.NUMBER
