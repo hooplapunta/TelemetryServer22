@@ -48,6 +48,22 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 			makeHandlerAwareOfAsyncErrors(routeController.registerUser));
 	}
 
+	// Simulation Stuff
+	if(routeController.commandSim) {
+		app.get(`/api/${routeName}/sim/:room/:event`,
+			makeHandlerAwareOfAsyncErrors(routeController.commandSim));
+	}
+
+	if(routeController.controlSim) {
+		app.get(`/api/${routeName}/simctl/:room/:control`,
+			makeHandlerAwareOfAsyncErrors(routeController.controlSim));
+	}
+
+	if(routeController.failureSim) {
+		app.get(`/api/${routeName}/simfail/:room/:failure`, 
+			makeHandlerAwareOfAsyncErrors(routeController.failureSim));
+	}
+
 
 	if (routeController.getAll) {
 		app.get(

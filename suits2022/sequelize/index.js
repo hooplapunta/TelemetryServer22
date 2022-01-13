@@ -7,7 +7,8 @@ const { applyExtraSetup } = require('./extra-setup');
 const sequelize = new Sequelize({
 	dialect: 'sqlite',
 	storage: 'suitsdb/suits.sqlite',
-	logQueryParameters: true,
+	logQueryParameters: false,
+	logging: false,
 	benchmark: true
 });
 

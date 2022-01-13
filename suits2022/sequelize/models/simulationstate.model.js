@@ -10,6 +10,16 @@ module.exports = (sequelize) => {
             allowNull: false,
             type: DataTypes.INTEGER
         },
+        isRunning: {
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        isPaused: {
+            allowNull: false,
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
 		time: {
 			allowNull: false,
 			type: DataTypes.NUMBER,
