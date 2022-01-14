@@ -38,8 +38,8 @@ async function create(req, res) {
 	if (req.body.id) {
 		res.status(400).send(`Bad request: ID should not be provided, since it is determined automatically by the database.`)
 	} else {
-		await models.location.create(req.body);
-		res.status(201).end();
+		let location = await models.location.create(req.body);		
+		res.status(201).send(location.dataValues);
 	}
 };
 
@@ -53,19 +53,13 @@ async function updateUser(req, res) {
 };
 
 async function update(req, res) {
-	const id = getIdParam(req);
-
-	// We only accept an UPDATE request if the `:id` param matches the body `id`
-	if (req.body.id === id) {
-		await models.location.update(req.body, {
-			where: {
-				id: id
-			}
-		});
-		res.status(200).end();
-	} else {
-		res.status(400).send(`Bad request: param ID (${id}) does not match body ID (${req.location.id}).`);
-	}
+	let location = await models.location.update(req.body, {
+		where: {
+			id: req.params.id
+		}
+	});
+	console.log(location);
+	res.status(200).send({ok: true});
 };
 
 async function remove(req, res) {
@@ -75,6 +69,7 @@ async function remove(req, res) {
 			id: id
 		}
 	});
+
 	res.status(200).end();
 };
 

@@ -29,23 +29,23 @@ module.exports = (sequelize) => {
 			type: DataTypes.NUMBER
 		},
         altitude: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.NUMBER
 		},
         accuracy: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.NUMBER
 		},
         altitudeAccuracy: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.NUMBER
 		},
         heading: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.NUMBER
 		},
         speed: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.NUMBER
 		}
 	});

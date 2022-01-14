@@ -31,19 +31,13 @@ async function create(req, res) {
 };
 
 async function update(req, res) {
-	const id = getIdParam(req);
-
-	// We only accept an UPDATE request if the `:id` param matches the body `id`
-	if (req.body.id === id) {
-		await models.user.update(req.body, {
-			where: {
-				id: id
-			}
-		});
-		res.status(200).end();
-	} else {
-		res.status(400).send(`Bad request: param ID (${id}) does not match body ID (${req.body.id}).`);
-	}
+	console.log('Attempting to update user');
+	await models.user.update(req.body, {
+		where: {
+			id: req.params.id
+		}
+	});
+	res.status(200).end();
 };
 
 async function remove(req, res) {
