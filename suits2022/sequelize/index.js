@@ -1,12 +1,18 @@
 const { Sequelize } = require('sequelize');
 const { applyExtraSetup } = require('./extra-setup');
 
+const path = require('path');
+const appDir = path.resolve(process.cwd());
+
+const dbPath = path.join(appDir, 'suitsdb', 'suits.sqlite');
+
+console.log(appDir);
 // In a real app, you should keep the database connection URL as an environment variable.
 // But for this example, we will just use a local SQLite database.
 // const sequelize = new Sequelize(process.env.DB_CONNECTION_URL);
 const sequelize = new Sequelize({
 	dialect: 'sqlite',
-	storage: 'suitsdb/suits.sqlite',
+	storage: dbPath, // 'suitsdb/suits.sqlite',
 	logQueryParameters: false,
 	logging: false,
 	benchmark: true
