@@ -21,11 +21,15 @@ jobs:
         with:
           node-version: '16.x'
 
-      - name: npm install, build, and test
+      - name: npm install
         run: |
+          cd suits22
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          
+      - name: regenerate database
+        run: |
+          cd suits22/sqlite-exampledatabase/
+          node setup.js
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
