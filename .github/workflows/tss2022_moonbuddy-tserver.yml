@@ -31,7 +31,7 @@ jobs:
           
       - name: regenerate database
         run: |
-          cd sqlite-exampledatabase/
+          cd sqlite-example-database/
           node setup.js
 
       - name: Upload artifact for deployment job
