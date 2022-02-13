@@ -11,7 +11,7 @@ on:
 
 defaults:
   run:
-    working-directory: suits22
+    working-directory: suits2022
 
 jobs:
   build:
