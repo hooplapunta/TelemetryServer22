@@ -19,8 +19,8 @@
                   </div>
                   <div class="col-9">
                     <span class="d-flex justify-content-center white-text" style="font-size: 2em; margin-top: 10px;"><strong>NASA S.U.I.T.S. 2019 | Command Central</strong></span>
-                    <p *ngIf="connErr" style="color: yellow; font-size: 1em; text-align: center;"><i class="fa-solid fa-triangle-exclamation"></i> {{connErr}}</p>
-                    <p *ngIf="connErr" style="color: yellow; text-align: center;"><small>(Check the Config server path and verify the server is running.)</small></p>
+                    <p *ngIf="connErr && connErr !== ''" style="color: yellow; font-size: 1em; text-align: center;"><i class="fa-solid fa-triangle-exclamation"></i> {{connErr}}</p>
+                    <p *ngIf="connErr && connErr !== ''" style="color: yellow; text-align: center;"><small>(Check the Config server path and verify the server is running.)</small></p>
                   </div>
                   <div class="col-2">
                     <img src="https://www.nasa.gov/sites/all/themes/custom/nasatwo/images/nasa-logo.svg" style="width: 64px; height: 64px;" class="img-fluid float-right" alt="placeholder">
@@ -569,7 +569,7 @@
                       <label style="color: white;" for="exampleInputEmail1">Commanding Room</label>
                       <select class="form-select" aria-label="Default select example" [(ngModel)]="user.room" [ngModelOptions]="{standalone: true}">
                         <option value="null">Choose a room to join</option>
-                        <option *ngFor="let room of rooms; let i = index;" value="{{room.name}}">{{room.name}}</option>                        
+                        <option *ngFor="let room of rooms; let i = index;" value="{{room.id}}">{{room.name}}</option>                        
                       </select>
                       <!-- <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Room Name: ex. alpha" [(ngModel)]="user.room" [ngModelOptions]="{standalone: true}"> -->
                       <small id="emailHelp" class="form-text text-muted">The room name needs to be updated for each team.</small>

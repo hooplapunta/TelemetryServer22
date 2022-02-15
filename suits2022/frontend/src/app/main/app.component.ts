@@ -98,6 +98,7 @@ ngOnInit() {
   setInterval(() => {
     this.api.getServerConnection().then(result => {
       if(result.ok) {
+        this.connErr = "";
         this.lastConnTime = moment(result.data.time).format("MM-DD-YYYY hh:mm:ss A");
       } else {
         this.connErr = "No Server Connection!"
@@ -169,9 +170,19 @@ toggleConfig() {
 }
 
 updateUser() {
+  console.log(this.user);
   // Check if user exists first
-  this.api.getUserByName(this.user.name).then(result => {
-    console.log(result);
+  this.api.getUserByName(this.user.name).then(result => {    
+    if(result.length > 0) {
+      // User exists, update
+      this.api.updateUser(this.user).then(res => {
+        console.log(res);
+      });      
+    } else {
+      // User does not exist, create
+      this.api.registerUser(this.user.name, this.user.room);
+    }
+
   });
   // this.api.registerUser(this.user.name, this.user.room).then(result => {
   //   if(result.ok) {

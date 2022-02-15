@@ -45,4 +45,14 @@ export class APIService {
             return { ok: false, err: ex };
         })
     }
+
+    updateUser(user): Promise<any> {
+        return this.http.put(`${url}/api/users/${user.id}`, user)
+        .toPromise().then(user => {
+            return user;
+        }).catch(ex => {
+            return { ok: false, err: ex };
+        })
+    }
+
 }

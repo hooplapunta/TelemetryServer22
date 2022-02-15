@@ -6,6 +6,14 @@ async function getAll(req, res) {
 	res.status(200).json(rooms);
 };
 
+async function getAllRoomsWithUsers(req, res) {
+	const rooms = await models.room.findAll();
+
+	rooms.forEach(room => {
+		// await models.user 
+	});
+}
+
 async function getById(req, res) {
 	const id = getIdParam(req);
 	const room = await models.room.findByPk(id);
