@@ -42,6 +42,10 @@ app.get('/', (req, res) => {
 	`);
 });
 
+app.get('/conntest', (req, res) => {
+	res.status(200).send({ ok: true, time: new Date() });
+});
+
 // We define the standard REST APIs for each route (if they exist).
 for (const [routeName, routeController] of Object.entries(routes)) {
 
@@ -78,6 +82,12 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 		app.get(
 			`/api/${routeName}/:id`,
 			makeHandlerAwareOfAsyncErrors(routeController.getById)
+		);
+	}
+	if (routeController.getByName) {
+		app.get(
+			`/api/${routeName}/user/:username`,
+			makeHandlerAwareOfAsyncErrors(routeController.getByName)
 		);
 	}
 	if(routeController.getByRoomId) {

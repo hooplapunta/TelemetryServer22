@@ -6,7 +6,7 @@ import { Socket } from 'ngx-socket-io';
 import { map, retryWhen } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-const url: string = 'http://localhost:3000';
+const url: string = 'http://localhost:8080';
 const url2: string = 'https://suits-2021.herokuapp.com';
 
 @Injectable()

@@ -5,10 +5,12 @@
 import { Component, NgModule, OnInit, TemplateRef, ChangeDetectorRef, ViewChild, ElementRef} from '@angular/core';
 import { HttpClient, } from '@angular/common/http';
 import { trigger, transition, style, animate, state } from '@angular/animations';
-import { EMUService } from '../services/emu.service';
+// import { EMUService } from '../services/emu.service';
+import { APIService } from '../services/api.service';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { resolveReflectiveProviders } from '@angular/core/src/di/reflective_provider';
-import { Socket } from 'ngx-socket-io';
+import * as moment from 'moment';
+// import { Socket } from 'ngx-socket-io';
 
 
 //Variables
@@ -19,6 +21,7 @@ var global_num;
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  providers: [ APIService ],
   animations: [
     trigger('heightGrow', [
         state('closed', style({
@@ -34,10 +37,10 @@ var global_num;
 
 export class AppComponent {
 
-  title ='NASA SUITS 2021';
+  title ='NASA SUITS 2022';
   telems: {};
   uias: {};
-  socket;
+  // socket;
   configWin = 'closed';
   keepSettings = true;
   
@@ -47,6 +50,7 @@ export class AppComponent {
   rooms = [];
   clients = [];
   user = {
+    registered: false,
     siid: '',
     name: 'commander',
     room: 'alpha'
@@ -67,12 +71,16 @@ export class AppComponent {
   evaControls;          // Control Data
   evaFailure;           // Failure Data
 
+  connErr = "";         // Connection Error Message
+  lastConnTime: any;    // Last Connection Time
+
   errs = ['o2_error', 'pump_error', 'power_error', 'fan_error'];
 
   constructor( private http: HttpClient, 
-    private emu: EMUService, 
+    // private emu: EMUService, 
+    private api: APIService,
     private modalService: BsModalService, 
-    private socketService: Socket, 
+    // private socketService: Socket, 
     private cdr: ChangeDetectorRef ) {}
 
 //*************************************UIA****************************************
@@ -87,19 +95,36 @@ ngOnInit() {
     this.keepSettings = (ks === 'true')? true : false;
   }
 
-  // Request / Subscribe to rooms
-  this.emu.sGetRooms();
-  this.emu.sReceiveRooms().subscribe(data => {
-    this.rooms = data;
-    this.cdr.detectChanges();
+  setInterval(() => {
+    this.api.getServerConnection().then(result => {
+      if(result.ok) {
+        this.lastConnTime = moment(result.data.time).format("MM-DD-YYYY hh:mm:ss A");
+      } else {
+        this.connErr = "No Server Connection!"
+      }
+    });
+  }, 5000);
+
+  this.api.getRooms().then(result => {
+    this.rooms = result;
+  }).catch(ex => {
+    console.warn(ex);
   });
 
-  // Subscribe to clients
-  this.emu.sGetClients().subscribe(data => {
-    this.clients = this.groupBy(data.clients, 'room');
-  });
+  // Request / Subscribe to rooms
+  // this.emu.sGetRooms();
+  // this.emu.sReceiveRooms().subscribe(data => {
+  //   this.rooms = data;
+  //   this.cdr.detectChanges();
+  // });
+
+  // // Subscribe to clients
+  // this.emu.sGetClients().subscribe(data => {
+  //   this.clients = this.groupBy(data.clients, 'room');
+  // });
 
   let user = localStorage.getItem('user');
+
   if(this.keepSettings && user !== null) {
     console.log('Recalling User Settings');
     this.user = JSON.parse(user);
@@ -107,12 +132,25 @@ ngOnInit() {
     // Pre-connect
     this.register();
   }
-  
+
+  // Verify that a registered user already exists!
+  this.api.getUserByName(this.user.name).then(user => {
+    if(!user || user.length === 0) {
+      this.user.registered = false;
+    } else {
+      console.log(user[0]);
+      this.user['id'] = user[0].id;
+      this.user.registered = true;
+    }
+  }).catch(ex => {
+    console.warn(ex);
+  })
+
 }
 
 ngAfterViewInit() {
   setInterval(() => {
-    this.emu.sRequestClients();
+    // this.emu.sRequestClients();
   }, 3000);
 }
 
@@ -131,60 +169,70 @@ toggleConfig() {
 }
 
 updateUser() {
-  // this.user = this.user;
-  this.cdr.detectChanges();
-  this.emu.sDisconnect();
-  this.emu.sConnect();
+  // Check if user exists first
+  this.api.getUserByName(this.user.name).then(result => {
+    console.log(result);
+  });
+  // this.api.registerUser(this.user.name, this.user.room).then(result => {
+  //   if(result.ok) {
+  //     console.log(result);
+  //   }
+  // });
 
-  this.register();
+  // this.user = this.user;
+  // this.cdr.detectChanges();
+  // this.emu.sDisconnect();
+  // this.emu.sConnect();
+
+  // this.register();
 }
 
 register() {
-  this.emu.sRegister(this.user.name, this.user.room);
-  this.emu.sGetRegister().subscribe(data => {
-    this.user = data;
+  // this.emu.sRegister(this.user.name, this.user.room);
+  // this.emu.sGetRegister().subscribe(data => {
+  //   this.user = data;
 
-    if(this.keepSettings) {
-      localStorage.setItem('user', JSON.stringify(this.user));
-    }
+  //   if(this.keepSettings) {
+  //     localStorage.setItem('user', JSON.stringify(this.user));
+  //   }
 
-    this.createSim();
-  });
+  //   this.createSim();
+  // });
 }
 
 createSim() {
   // Enable the current SIM -- Do this only after the client has registered.
   // Enable UIA
-  this.emu.sEnableUiaSim( this.user.room );
-  this.emu.sUiaSimEnabled().subscribe(data => {
-    this.uiaSimInfo = data;
-  });
+  // this.emu.sEnableUiaSim( this.user.room );
+  // this.emu.sUiaSimEnabled().subscribe(data => {
+  //   this.uiaSimInfo = data;
+  // });
 
-  // Enable EVA
-  this.emu.sEnableEvaSim( this.user.room );
-  this.emu.sEvaSimEnabled().subscribe(data => {
-    console.log(this.evaSimInfo);
-    this.evaSimInfo = data;
-    this.cdr.detectChanges();
-    console.log(this.evaSimInfo);
-  });
+  // // Enable EVA
+  // this.emu.sEnableEvaSim( this.user.room );
+  // this.emu.sEvaSimEnabled().subscribe(data => {
+  //   console.log(this.evaSimInfo);
+  //   this.evaSimInfo = data;
+  //   this.cdr.detectChanges();
+  //   console.log(this.evaSimInfo);
+  // });
 }
 
 //STARTS THE UIA SIMULATION 
 startUiaSimulation() {
 
   this.simState = 'start';
-  this.emu.sUIAToggle('start');
+  // this.emu.sUIAToggle('start');
 
-  this.uiaSubscriber = this.emu.sUIAGetControls().subscribe(data => {
-    this.uiaState = data;
-    console.log(this.uiaState);
-  });
+  // this.uiaSubscriber = this.emu.sUIAGetControls().subscribe(data => {
+  //   this.uiaState = data;
+  //   console.log(this.uiaState);
+  // });
 
-  this.uiaSubscriber = this.emu.sUIAGetData().subscribe(data => {
-    this.uiaData = data;
-    console.log(this.uiaData);
-  });
+  // this.uiaSubscriber = this.emu.sUIAGetData().subscribe(data => {
+  //   this.uiaData = data;
+  //   console.log(this.uiaData);
+  // });
 
   // this.http.post(url +'/api/simulation/uiastart',  {
   // })
@@ -199,7 +247,7 @@ startUiaSimulation() {
 //STOPS THE SERVER AND DATA STREAM
 stopUiaSimulation() {
   this.simState = 'stop';
-  this.emu.sUIAToggle('stop');
+  // this.emu.sUIAToggle('stop');
 
   // Stop getting events
   this.uiaSubscriber.unsubscribe();
@@ -215,7 +263,7 @@ stopUiaSimulation() {
 
 pauseUiaSimulation() {
   this.simState = 'pause';
-  this.emu.sUIAToggle('pause');
+  // this.emu.sUIAToggle('pause');
 }
 
   //SIMULATION IS PAUSED
@@ -229,7 +277,7 @@ pauseUiaSimulation() {
 
 resumeUiaSimulation() {
   this.simState = 'start';
-  this.emu.sUIAToggle('unpause');
+  // this.emu.sUIAToggle('unpause');
 }
 
 //UiaSIMULATION IS RESUMED
@@ -245,10 +293,10 @@ resumeUiaSimulation() {
 //STARTS THE SERVER AND DATA STREAM
   startSimulation() {
     this.evaSimState = 'start';
-    this.evaTelemSubscriber = this.emu.sEVAGetData().subscribe(data => {
-      this.evaTelem = data;
-      console.log(this.evaTelem);
-    });
+    // this.evaTelemSubscriber = this.emu.sEVAGetData().subscribe(data => {
+    //   this.evaTelem = data;
+    //   console.log(this.evaTelem);
+    // });
   //   this.http.post(this.url + '/api/simulation/start',  {
   //   })
   //   .subscribe(data => {
@@ -259,7 +307,7 @@ resumeUiaSimulation() {
     // interval_switch = setInterval(() => { this.getData() }, 1000);
     // console.log('server is running...');
 
-    this.emu.sEvaToggle('start');
+    // this.emu.sEvaToggle('start');
 
   }
 
@@ -273,14 +321,14 @@ resumeUiaSimulation() {
     // console.log(data);
     // });
     // clearInterval(interval_switch );
-    this.emu.sEvaToggle('stop');
+    // this.emu.sEvaToggle('stop');
     console.log('server has stopped');
   }
 
   //SIMULATION IS PAUSED
   pauseSimulation() {
     this.evaSimState = 'pause';
-    this.emu.sEvaToggle('pause');
+    // this.emu.sEvaToggle('pause');
 
     // this.http.post(this.url + '/api/simulation/pause', {
     //   }).subscribe(data => {
@@ -291,15 +339,15 @@ resumeUiaSimulation() {
 //SIMULATION IS RESUMED
 resumeSimulation() {
   this.evaSimState = 'unpause';
-  this.emu.sEvaToggle('unpause');
+  // this.emu.sEvaToggle('unpause');
   // this.http.post(this.url + '/api/simulation/unpause', {
   //   }).subscribe(data => {
   //     console.log(data); });
 }
 
 uiaActionControl(sensor, action) {
-  this.emu.sUIAControl(sensor, action);
-    console.log(`${sensor} -> setting to ${action}`);
+  // this.emu.sUIAControl(sensor, action);
+  //   console.log(`${sensor} -> setting to ${action}`);
 }
 
 
@@ -319,7 +367,7 @@ errFunc() {
   console.log("In err function number = " + num)
   
   // Send the error- let the server do the work
-  this.emu.sEvaError(err, true);
+  // this.emu.sEvaError(err, true);
 
   return num;
 }
@@ -331,16 +379,16 @@ resErr() {
   console.log("In resolve function number = " + global_num);
 
   let err = this.errs[global_num];
-  this.emu.sEvaError(err, false);
+  // this.emu.sEvaError(err, false);
 }
 //********************************************************************** */
 
 toggleControl(key, val) {
-  this.emu.sEvaControl(key, val);
+  // this.emu.sEvaControl(key, val);
 }
 
 sendError(errorKey, val) {
-  this.emu.sEvaError(errorKey, val);
+  // this.emu.sEvaError(errorKey, val);
 }
 
 fanError(){this.http.patch(
@@ -413,21 +461,21 @@ setHandHold(val){this.http.patch(this.url + '/api/simulation/hand-hold?handhold=
 //GETS DATA FOR STREAM FROM EMU.SERVICE.TS UNDER SERVICES 
 //AN ARRAY OF UIA DATA IS CREATED, THIS DATA IS FED TO UIA FUNCTIONS 
 getUiaData() {
-  this.emu.getUia()
-  .subscribe(data => {this.uias = data;
-    this.uias = Array.of(this.uias);
-    console.log(this.uias)
-  });
+  // this.emu.getUia()
+  // .subscribe(data => {this.uias = data;
+  //   this.uias = Array.of(this.uias);
+  //   console.log(this.uias)
+  // });
 }
 
 //GETS DATA FOR STREAM FROM EMU.SERVICE.TS UNDER SERVICES
 //AN ARRAY OF EMU DATA IS CREATED, THIS DATA IS FED TO EMU FUNCTIONS
   getData() {
-    this.emu.getEMU()
-    .subscribe(data => {this.telems = data;
-      this.telems = Array.of(this.telems);
-      console.log(this.telems)
-    });
+    // this.emu.getEMU()
+    // .subscribe(data => {this.telems = data;
+    //   this.telems = Array.of(this.telems);
+    //   console.log(this.telems)
+    // });
   }
 
   groupBy(xs, key) {

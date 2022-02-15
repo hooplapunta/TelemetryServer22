@@ -19,6 +19,8 @@
                   </div>
                   <div class="col-9">
                     <span class="d-flex justify-content-center white-text" style="font-size: 2em; margin-top: 10px;"><strong>NASA S.U.I.T.S. 2019 | Command Central</strong></span>
+                    <p *ngIf="connErr" style="color: yellow; font-size: 1em; text-align: center;"><i class="fa-solid fa-triangle-exclamation"></i> {{connErr}}</p>
+                    <p *ngIf="connErr" style="color: yellow; text-align: center;"><small>(Check the Config server path and verify the server is running.)</small></p>
                   </div>
                   <div class="col-2">
                     <img src="https://www.nasa.gov/sites/all/themes/custom/nasatwo/images/nasa-logo.svg" style="width: 64px; height: 64px;" class="img-fluid float-right" alt="placeholder">
@@ -67,13 +69,17 @@
               <ul class="list-group list-group-flush elegant-color-dark">
                 <div class="list-group" id="userinfo">
                   <div style="color: white;" class="fw-bold">User</div>
-                  <li class="list-group-item">SocketID (siid): {{user.siid}}</li>
-                  <li class="list-group-item">Username: {{user.name}}</li>
+                  <p *ngIf="!user.registered" style="color: yellow;"><i class="fa-solid fa-triangle-exclamation"></i> User Not Registed</p>
+                  <!-- <li class="list-group-item">SocketID (siid): {{user.siid}}</li> -->
+                  <li class="list-group-item">Username: {{user.name}} - ID: {{user.id}}</li>
                   <li class="list-group-item">Room: {{user.room}}</li>
                 </div>
                 <div class="list-group" id="userinfo">
                   <div style="color: white;" class="fw-bold">Connection</div>
-                  <li class="list-group-item">Socket URI: </li>
+                  <li class="list-group-item">Status: 
+                    <span *ngIf="connErr" style="color: red;">Not Connected</span>
+                    <span *ngIf="!connErr" style="color: green;">Connected at {{lastConnTime}}</span>
+                  </li>
                   <li class="list-group-item">API URI: {{url}}</li>
                 </div>
                 <div class="list-group" id="userinfo">
