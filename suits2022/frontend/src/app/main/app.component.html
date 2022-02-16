@@ -360,12 +360,12 @@
                     <span *ngIf="evaSimState === 'pause'" style="color: white;"><i style="color: #4285f4;" class="fa fa-pause"></i> Sim Paused</span>
                     <br/>
 
-                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' && evaSimState === 'pause' || evaSimState === 'start')" (click)="startSimulation()" class="btn success-color btn-lg">START</button>
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState === 'pause' || evaSimState === 'start')" (click)="startSimulation()" class="btn success-color btn-lg">START</button>
                     <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'start' || evaSimState === 'pause')" (click)="pauseSimulation()" class="btn btn-primary btn-lg">PAUSE</button>  
                     <button role="button" style="width: 25%;" [disabled]="(!connErr === '')" (click)="errFunc()" class="btn warning-color btn-lg">ERROR</button>
                     <br>
                     <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'start' && evaSimState !== 'pause')" (click) ="stopSimulation();" class="btn btn-danger btn-lg">STOP / RESET</button>
-                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'pause')" (click)="resumeSimulation()" class="btn success-color-dark btn-lg" >RESUME </button> 
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'pause')" (click)="resumeSimulation()" class="btn success-color btn-lg" >RESUME </button> 
                     <button role="button" style="width: 25%;" [disabled]="(!connErr === '')" (click)="resErr()" class="btn primary-color-dark btn-lg">RESOLVE</button> 
 
                   </div>

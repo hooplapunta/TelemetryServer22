@@ -318,6 +318,13 @@ resumeUiaSimulation() {
 //***********************************Telemetry*************************************
 //STARTS THE SERVER AND DATA STREAM
   startSimulation() {
+
+    if(this.evaSimState === 'pause') {
+      this.resumeSimulation();
+
+      return;
+    }
+
     this.evaSimState = 'start';
 
     this.api.simControl(this.user.room, this.evaSimState).then(res => {
@@ -350,14 +357,17 @@ resumeUiaSimulation() {
     this.evaSimState = 'pause';
    
     this.api.simControl(this.user.room, this.evaSimState).then(res => {
-      clearInterval(this.simInterval); // Clear the sim interval
-      this.evaTelem = {};
+      clearInterval(this.simInterval); // Clear the sim interval      
     });
 }
 
 //SIMULATION IS RESUMED
 resumeSimulation() {
   this.evaSimState = 'unpause';
+
+  this.api.simControl(this.user.room, this.evaSimState).then(res => {    
+    this.evaSimState = 'start'; // Set state back to start
+  });
   
   this.simInterval = setInterval(() => {
     this.getSimulationData();
