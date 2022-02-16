@@ -34,7 +34,7 @@
   <!-- ********************************* HEADER *******************************************-->
 
 <!-- START CONFIG -->
-<div><p style="color: white; margin-left: 15px;"><small>siid:</small> {{user?.siid}} <small>username: </small><span style="color: yellow;">{{user?.name}} </span><small>room: </small><span style="color: yellow;">{{user?.room}}</span></p></div>
+<div><p style="color: white; margin-left: 15px;"><small>siid:</small> {{user?.siid}} <small>username: </small><span style="color: yellow;">{{user?.name}} </span><small>room: </small><span style="color: yellow;">{{user?.roomName}}</span></p></div>
 
 <!-- END CONFIG -->
 
@@ -354,19 +354,19 @@
                   <div class="col-12">
                     <h3 class="subtitle">Sim Controls</h3>      
                     
-                    <span *ngIf="!evaSimInfo" style="color: yellow;">>>Sim Has Not Been Created! Options Disabled<<</span>
+                    <span *ngIf="!connErr === ''" style="color: yellow;">>>Sim Has Not Been Created! Options Disabled<<</span>
                     <span *ngIf="evaSimState === 'start'" style="color: white;"><i style="color: green;" class="fa fa-play pulse"></i> Sim Running</span>
                     <span *ngIf="evaSimState === 'stop'" style="color: white;"><i style="color: red;" class="fa fa-stop"></i> Sim Stopped</span>
                     <span *ngIf="evaSimState === 'pause'" style="color: white;"><i style="color: #4285f4;" class="fa fa-pause"></i> Sim Paused</span>
                     <br/>
 
-                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo && evaSimState === 'pause' || evaSimState === 'start')" (click)="startSimulation()" class="btn success-color btn-lg">START</button>
-                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo || evaSimState !== 'start' || evaSimState === 'pause')" (click)="pauseSimulation()" class="btn btn-primary btn-lg">PAUSE</button>  
-                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo)" (click)="errFunc()" class="btn warning-color btn-lg">ERROR</button>
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' && evaSimState === 'pause' || evaSimState === 'start')" (click)="startSimulation()" class="btn success-color btn-lg">START</button>
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'start' || evaSimState === 'pause')" (click)="pauseSimulation()" class="btn btn-primary btn-lg">PAUSE</button>  
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '')" (click)="errFunc()" class="btn warning-color btn-lg">ERROR</button>
                     <br>
-                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo || evaSimState !== 'start' && evaSimState !== 'pause')" (click) ="stopSimulation();" class="btn btn-danger btn-lg">STOP / RESET</button>
-                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo || evaSimState !== 'pause')" (click)="resumeSimulation()" class="btn success-color-dark btn-lg" >RESUME </button> 
-                    <button role="button" style="width: 25%;" [disabled]="(!evaSimInfo)" (click)="resErr()" class="btn primary-color-dark btn-lg">RESOLVE</button> 
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'start' && evaSimState !== 'pause')" (click) ="stopSimulation();" class="btn btn-danger btn-lg">STOP / RESET</button>
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'pause')" (click)="resumeSimulation()" class="btn success-color-dark btn-lg" >RESUME </button> 
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '')" (click)="resErr()" class="btn primary-color-dark btn-lg">RESOLVE</button> 
 
                   </div>
                 </div>

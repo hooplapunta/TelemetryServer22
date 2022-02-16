@@ -61,7 +61,30 @@ export class APIService {
             return { ok: true, data: users};
         }).catch(ex => {
             return { ok: false, err: ex };
-        })
+        });
     }
+
+    //********SIM CONTROLS********//
+
+    simControl(room, command): Promise<any> {
+        return this.http.get(`${url}/api/simulationcontrol/sim/${room}/${command}`)
+        .toPromise().then(result => {
+            return result;
+        }).catch(ex => {
+            return { ok: false, err: ex };
+        });
+    }
+
+    getEvaState(room): Promise<any> {
+        return this.http.get(`${url}/api/simulationstate/room/${room}`)
+        .toPromise().then(result => {
+            return result[0];
+        }).catch(ex => {
+            return { ok: false, err: ex };
+        });
+    }
+
+    //******END SIM CONTROLS******//
+
 
 }

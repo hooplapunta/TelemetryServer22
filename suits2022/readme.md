@@ -39,11 +39,12 @@ The SUITS Telemetry Server utilizes SQLite and an ORM (Object Relational Mapper)
 
 To run the setup, use the following command:  
 ```bash 
-# change directory to sqlite-example-database 
-$ cd sqlite-example-database/
-# using node, run the setup.js script
-$ node setup.js 
+# using node, run the setup.js script 
+$ node sqlite-example-database/setup.js 
 ```
+> *Note: Verify that the setup.js file is run from the root and not from the ./sqlite-example-database. It appears that nodejs' path will place the db at the root of the dir that setup is run from. Verify that the suitsdb/suits.sqlite is at the root of the project (the location where package.json/index.js lives).
+
+
 
 When "Done!" prints to the console, the data has been written to the database. 
 

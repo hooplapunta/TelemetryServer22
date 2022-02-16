@@ -29,9 +29,10 @@ class EVASimulation {
 	async seedInstances() {
 
 		// Get the instances for the room
-		let state = await models.simulationstate.findOne({ where: { room: this.room } });
-		let control = await models.simulationcontrol.findOne({ where: { room: this.room } });
-		let failure = await models.simulationfailure.findOne({ where: { room: this.room } });
+		console.log(typeof this.room + this.room);
+		let state = await models.simulationstate.findOne({ where: { room: parseInt(this.room) } });
+		let control = await models.simulationcontrol.findOne({ where: { room: parseInt(this.room) } });
+		let failure = await models.simulationfailure.findOne({ where: { room: parseInt(this.room) } });
 
 		// Seed the states on start
 		await models.simulationstate.update(simStateSeed, {

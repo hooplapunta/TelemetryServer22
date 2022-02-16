@@ -53,7 +53,8 @@ export class AppComponent {
     registered: false,
     siid: '',
     name: 'commander',
-    room: 'alpha'
+    room: 1,
+    roomName: 'alpha'
   };
 
   userFrm;
@@ -70,6 +71,7 @@ export class AppComponent {
   evaTelem;             // Telemetry Data
   evaControls;          // Control Data
   evaFailure;           // Failure Data
+  simInterval;          // Sim Interval func
 
   connErr = "";         // Connection Error Message
   lastConnTime: any;    // Last Connection Time
@@ -317,56 +319,62 @@ resumeUiaSimulation() {
 //STARTS THE SERVER AND DATA STREAM
   startSimulation() {
     this.evaSimState = 'start';
-    // this.evaTelemSubscriber = this.emu.sEVAGetData().subscribe(data => {
-    //   this.evaTelem = data;
-    //   console.log(this.evaTelem);
-    // });
-  //   this.http.post(this.url + '/api/simulation/start',  {
-  //   })
-  //   .subscribe(data => {
-  //   console.log(data);
-  //   }); 
 
-    //updates data every 1 second
-    // interval_switch = setInterval(() => { this.getData() }, 1000);
-    // console.log('server is running...');
-
-    // this.emu.sEvaToggle('start');
+    this.api.simControl(this.user.room, this.evaSimState).then(res => {
+      if(!res.ok) {
+        console.log(`An error ocurred starting the sim!`);
+      } else {
+        // If the sim start returns ok, let's get the data on interval
+        this.simInterval = setInterval(() => {          
+            this.getSimulationData();
+        }, 1000);
+      }
+    });
 
   }
 
-//STOPS THE SERVER AND DATA STREAM AND REFRESHES THE PAGE 
+  //STOPS THE SERVER AND DATA STREAM AND REFRESHES THE PAGE 
   stopSimulation() {
     this.evaSimState = 'stop';
-    this.evaTelemSubscriber.unsubscribe();
-    // this.http.post(this.url + '/api/simulation/stop', {
-    // })
-    // .subscribe(data => {
-    // console.log(data);
-    // });
-    // clearInterval(interval_switch );
-    // this.emu.sEvaToggle('stop');
+
+    this.api.simControl(this.user.room, this.evaSimState).then(res => {
+      clearInterval(this.simInterval); // Clear the sim interval
+      this.evaTelem = {}; // Clear the sim data
+    });
+    
     console.log('server has stopped');
   }
 
   //SIMULATION IS PAUSED
   pauseSimulation() {
     this.evaSimState = 'pause';
-    // this.emu.sEvaToggle('pause');
-
-    // this.http.post(this.url + '/api/simulation/pause', {
-    //   }).subscribe(data => {
-    //     console.log(data);
-    // });
+   
+    this.api.simControl(this.user.room, this.evaSimState).then(res => {
+      clearInterval(this.simInterval); // Clear the sim interval
+      this.evaTelem = {};
+    });
 }
 
 //SIMULATION IS RESUMED
 resumeSimulation() {
   this.evaSimState = 'unpause';
-  // this.emu.sEvaToggle('unpause');
-  // this.http.post(this.url + '/api/simulation/unpause', {
-  //   }).subscribe(data => {
-  //     console.log(data); });
+  
+  this.simInterval = setInterval(() => {
+    this.getSimulationData();
+  }, 1000);
+
+}
+
+// Get Eva Sim Data
+getSimulationData() {
+  if(this.connErr === '') {
+    this.api.getEvaState(this.user.room).then(res => {
+      console.log(res);
+      this.evaTelem = res;
+    }).catch(ex => {
+      console.log(ex);
+    });
+  }
 }
 
 uiaActionControl(sensor, action) {

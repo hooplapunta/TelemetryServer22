@@ -6,7 +6,7 @@ const appDir = path.resolve(process.cwd());
 
 const dbPath = path.join(appDir, 'suitsdb', 'suits.sqlite');
 
-console.log(appDir);
+console.log(`DB Path: ${dbPath}`);
 // In a real app, you should keep the database connection URL as an environment variable.
 // But for this example, we will just use a local SQLite database.
 // const sequelize = new Sequelize(process.env.DB_CONNECTION_URL);
