@@ -71,6 +71,14 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 			makeHandlerAwareOfAsyncErrors(routeController.failureSim));
 	}
 
+	// Commander Stuff
+	if(routeController.getAllRoomsWithUsers) {
+		app.get(
+			`/api/${routeName}/cmdr/getusers`, 
+			makeHandlerAwareOfAsyncErrors(routeController.getAllRoomsWithUsers));
+	}
+	// End Commander Stuff
+
 
 	if (routeController.getAll) {
 		app.get(
@@ -90,12 +98,14 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 			makeHandlerAwareOfAsyncErrors(routeController.getByName)
 		);
 	}
+	
 	if(routeController.getByRoomId) {
 		app.get(
 			`/api/${routeName}/room/:room`,
 			makeHandlerAwareOfAsyncErrors(routeController.getByRoomId)
 		)
 	}
+
 	if(routeController.getByUserId) {
 		app.get(
 			`/api/${routeName}/user/:user`,

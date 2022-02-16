@@ -55,4 +55,13 @@ export class APIService {
         })
     }
 
+    getUserRooms(): Promise<any> {
+        return this.http.get(`${url}/api/rooms/cmdr/getusers`)
+        .toPromise().then(users => {
+            return { ok: true, data: users};
+        }).catch(ex => {
+            return { ok: false, err: ex };
+        })
+    }
+
 }

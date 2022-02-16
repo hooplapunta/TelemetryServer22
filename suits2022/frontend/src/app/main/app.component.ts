@@ -85,6 +85,7 @@ export class AppComponent {
 
 //*************************************UIA****************************************
 
+//test
 ngOnInit() {
   // this.startUiaSimulation();
 
@@ -104,10 +105,22 @@ ngOnInit() {
         this.connErr = "No Server Connection!"
       }
     });
+
+    this.api.getUserRooms().then(result => {
+      if(result.ok) {
+
+        // order by room
+
+
+        this.clients = this.groupBy(result.data, 'room');
+      }
+    });
   }, 5000);
 
   this.api.getRooms().then(result => {
     this.rooms = result;
+
+    console.log(this.rooms);
   }).catch(ex => {
     console.warn(ex);
   });

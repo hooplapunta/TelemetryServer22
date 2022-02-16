@@ -18,7 +18,7 @@
                     <img src="https://microgravityuniversity.jsc.nasa.gov/img/suits/NASASUITS-logo.png" style="width: 64px; height: 64px;" class="img-fluid float-left" alt="placeholder">
                   </div>
                   <div class="col-9">
-                    <span class="d-flex justify-content-center white-text" style="font-size: 2em; margin-top: 10px;"><strong>NASA S.U.I.T.S. 2019 | Command Central</strong></span>
+                    <span class="d-flex justify-content-center white-text" style="font-size: 2em; margin-top: 10px;"><strong>NASA S.U.I.T.S. | Command Central</strong></span>
                     <p *ngIf="connErr && connErr !== ''" style="color: yellow; font-size: 1em; text-align: center;"><i class="fa-solid fa-triangle-exclamation"></i> {{connErr}}</p>
                     <p *ngIf="connErr && connErr !== ''" style="color: yellow; text-align: center;"><small>(Check the Config server path and verify the server is running.)</small></p>
                   </div>
@@ -103,10 +103,10 @@
               </div>
               <ul class="list-group list-group-flush elegant-color-dark">
                 <div class="list-group" id="clients" *ngFor="let group of clients | keyvalue">
-                  <div style="color: white;" class="fw-bold">Room {{group.key}}</div>                  
+                  <div style="color: white;" class="fw-bold">Room Group</div>                  
                   <li class="list-group-item" *ngFor="let client of group.value;">
-                    <span *ngIf="user.siid === client.siid" style="color: yellow;">*name: {{client.name}}, siid: {{client.siid}}</span>
-                    <span *ngIf="user.siid !== client.siid">name: {{client.name}}, siid: {{client.siid}}</span>
+                    <span *ngIf="user.siid === client.siid" style="color: yellow;">*name: {{client.username}}</span>
+                    <span *ngIf="user.siid !== client.siid"><strong>Room:</strong> {{client.name}} <strong>User:</strong> {{client.username}}</span>
                   </li>
                 </div>
               </ul>
