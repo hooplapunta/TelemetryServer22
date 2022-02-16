@@ -75,6 +75,24 @@ export class APIService {
         });
     }
 
+    simDCUCtl(room, command): Promise<any> {
+        return this.http.get(`${url}/api/simulationcontrol/simctl/${room}/${command}`)
+        .toPromise().then(result => {
+            return result;
+        }).catch(ex => {
+            return { ok: false, err: ex };
+        });
+    }
+
+    simFailureCtl(room, failure): Promise<any> {
+        return this.http.get(`${url}/api/simulationcontrol/simfail/${room}/${failure}`)
+        .toPromise().then(result => {
+            return result;
+        }).catch(ex => {
+            return { ok: false, err: ex };
+        });
+    }
+
     getEvaState(room): Promise<any> {
         return this.http.get(`${url}/api/simulationstate/room/${room}`)
         .toPromise().then(result => {

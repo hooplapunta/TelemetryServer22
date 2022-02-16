@@ -351,6 +351,7 @@
             <div class="row">
               <div class="col-12">
                 <div class="row">
+
                   <div class="col-12">
                     <h3 class="subtitle">Sim Controls</h3>      
                     
@@ -362,83 +363,162 @@
 
                     <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState === 'pause' || evaSimState === 'start')" (click)="startSimulation()" class="btn success-color btn-lg">START</button>
                     <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'start' || evaSimState === 'pause')" (click)="pauseSimulation()" class="btn btn-primary btn-lg">PAUSE</button>  
-                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '')" (click)="errFunc()" class="btn warning-color btn-lg">ERROR</button>
+                    <!-- <button role="button" style="width: 25%;" [disabled]="(!connErr === '')" (click)="errFunc()" class="btn warning-color btn-lg">ERROR</button> -->
                     <br>
-                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'start' && evaSimState !== 'pause')" (click) ="stopSimulation();" class="btn btn-danger btn-lg">STOP / RESET</button>
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'start' && evaSimState !== 'pause')" (click) ="stopSimulation();" class="btn btn-danger btn-lg">STOP</button>
                     <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'pause')" (click)="resumeSimulation()" class="btn success-color btn-lg" >RESUME </button> 
-                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '')" (click)="resErr()" class="btn primary-color-dark btn-lg">RESOLVE</button> 
+                    <!-- <button role="button" style="width: 25%;" [disabled]="(!connErr === '')" (click)="resErr()" class="btn primary-color-dark btn-lg">RESOLVE</button>  -->
 
                   </div>
                 </div>
                 <br/>
-                <hr class="my-2 white">
-                <div class="row">
-                  <div class="col-2"></div>
-                  <div class="col-8 container elegant-color-dark text-right" style= "width: 50%">
-              
-                    <h3 class="subtitle">DCU Controls</h3>
+                <hr class="my-2 white">                
 
-                    <table class="controls-table">
-                      <thead>
+                <ul class="nav nav-tabs" id="evaTabs" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="dcu-tab" data-bs-toggle="tab" data-bs-target="#dcu" type="button" role="tab" aria-controls="dcu" aria-selected="true">DCU Controls</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="error-tab" data-bs-toggle="tab" data-bs-target="#error" type="button" role="tab" aria-controls="error" aria-selected="false">Error Selection</button>
+                  </li>
+                </ul>
+                                  
+                <div class="tab-content" id="myTabContent">
+                <div class="col tab-pane fade show active" id="dcu" role="tabpanel" aria-labelledby="dcu">
+                  <div class="row">                
+                      <div class="col-2"></div>
+                      <div class="col-8 container elegant-color-dark text-right" style= "width: 50%">
+                  
+                        <br/>
+                        <h3 class="subtitle">DCU Controls</h3>
+
+                        <table class="controls-table">
+                          <thead>
+                            
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="dcu-label">
+                                Suit Power&nbsp;&nbsp; 
+                              </td>
+                              <td>
+                                <label class="switch float-right">
+                                  <input type="checkbox" (click)="toggleControl('suit_power', $event.target.checked)"/>
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td>
+                                <label class="switch float-left">
+                                  <input type="checkbox" (click)="toggleControl('fan_switch', $event.target.checked)">
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td class="dcu-label" style="text-align: left;">&nbsp;&nbsp;FAN SWITCH</td>       
+                            </tr>
+                            <tr>
+                              <td class="dcu-label">O2 Switch&nbsp;&nbsp;</td>
+                              <td>
+                                <label class="switch float-right">
+                                  <input type="checkbox" (click)="toggleControl('o2_switch', $event.target.checked)">
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td>
+                                <label class="switch float-left"> 
+                                  <input type="checkbox"  (click)="toggleControl('rca', $event.target.checked)"/>
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td class="dcu-label" style="text-align: left;">&nbsp;&nbsp;RCA</td>
+                            </tr>
+                            <tr>
+                              <td class="dcu-label">AUX&nbsp;&nbsp;</td>
+                              <td>
+                                <label class="switch float-right">
+                                  <input type="checkbox" (click)="toggleControl('aux', $event.target.checked)">
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td>
+                                <label class="switch float-left">
+                                  <input type="checkbox" (click)="toggleControl('pump', $event.target.checked)">
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td class="dcu-label" style="text-align: left;">&nbsp;&nbsp;PUMP</td>
+                            </tr>
+                          </tbody>
+                        </table>
                         
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td class="dcu-label">
-                            Suit Power&nbsp;&nbsp; 
-                          </td>
-                          <td>
-                            <label class="switch float-right">
-                              <input type="checkbox" (click)="toggleControl('suit_power', $event.target.checked)"/>
-                              <span class="slider round"></span>
-                            </label>
-                          </td>
-                          <td>
-                            <label class="switch float-left">
-                              <input type="checkbox" (click)="toggleControl('fan_switch', $event.target.checked)">
-                              <span class="slider round"></span>
-                            </label>
-                          </td>
-                          <td class="dcu-label" style="text-align: left;">&nbsp;&nbsp;FAN SWITCH</td>       
-                        </tr>
-                        <tr>
-                          <td class="dcu-label">O2 Switch&nbsp;&nbsp;</td>
-                          <td>
-                            <label class="switch float-right">
-                              <input type="checkbox" (click)="toggleControl('o2_switch', $event.target.checked)">
-                              <span class="slider round"></span>
-                            </label>
-                          </td>
-                          <td>
-                            <label class="switch float-left"> 
-                              <input type="checkbox"  (click)="toggleControl('rca', $event.target.checked)"/>
-                              <span class="slider round"></span>
-                            </label>
-                          </td>
-                          <td class="dcu-label" style="text-align: left;">&nbsp;&nbsp;RCA</td>
-                        </tr>
-                        <tr>
-                          <td class="dcu-label">AUX&nbsp;&nbsp;</td>
-                          <td>
-                            <label class="switch float-right">
-                              <input type="checkbox" (click)="toggleControl('aux', $event.target.checked)">
-                              <span class="slider round"></span>
-                            </label>
-                          </td>
-                          <td>
-                            <label class="switch float-left">
-                              <input type="checkbox" (click)="toggleControl('pump', $event.target.checked)">
-                              <span class="slider round"></span>
-                            </label>
-                          </td>
-                          <td class="dcu-label" style="text-align: left;">&nbsp;&nbsp;PUMP</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    
-                  </div>    
-                  <div class="col-2"></div>          
+                      </div>    
+                      <div class="col-2"></div>
+                    </div>
+
+                  </div>
+                  
+                  <div class="tab-pane fade" id="error" role="tabpanel" aria-labelledby="error">
+                    <div class="row">                
+                        <div class="col-2"></div>
+                        <div class="col-8 container elegant-color-dark text-right" style= "width: 50%">
+                  
+                          <br/>
+                          <h3 class="subtitle">Error</h3>
+                          <table class="controls-table">
+                            <thead>
+                              
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td class="dcu-label">
+                                  O2 Error&nbsp;&nbsp; 
+                                </td>
+                                <td>
+                                  <label class="switch float-right">
+                                    <input type="checkbox" (click)="toggleError('o2_error', $event.target.checked)"/>
+                                    <span class="slider round"></span>
+                                  </label>
+                                </td>                                
+                              </tr>
+                              
+                              <tr>
+                                <td class="dcu-label">Pump Error&nbsp;&nbsp;</td>
+                                <td>
+                                  <label class="switch float-right">
+                                    <input type="checkbox" (click)="toggleError('pump_error', $event.target.checked)">
+                                    <span class="slider round"></span>
+                                  </label>
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td class="dcu-label">Power Error&nbsp;&nbsp;</td>
+                                <td>
+                                  <label class="switch float-right">
+                                    <input type="checkbox" (click)="toggleError('power_error', $event.target.checked)">
+                                    <span class="slider round"></span>
+                                  </label>
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td class="dcu-label">Fan Error&nbsp;&nbsp;</td>
+                                <td>
+                                  <label class="switch float-right">
+                                    <input type="checkbox" (click)="toggleError('fan_error', $event.target.checked)">
+                                    <span class="slider round"></span>
+                                  </label>
+                                </td>
+                              </tr>
+
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+                  </div>
                 </div>
+
+
               </div>
             </div>
           </div>

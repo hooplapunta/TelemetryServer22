@@ -426,11 +426,13 @@ resErr() {
 //********************************************************************** */
 
 toggleControl(key, val) {
+  this.api.simDCUCtl(this.user.room, key);
+  // console.log(key, val);
   // this.emu.sEvaControl(key, val);
 }
 
-sendError(errorKey, val) {
-  // this.emu.sEvaError(errorKey, val);
+toggleError(errorKey, val) {
+  this.api.simFailureCtl(this.user.room, errorKey);
 }
 
 fanError(){this.http.patch(
