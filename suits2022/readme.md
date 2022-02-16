@@ -79,7 +79,7 @@ Under "My Workspace" you should see the SUITS folder. Expand it to reveal:
     Lunar SAR(Search and Rescue) data functions
 
 ## EVA Errors
-| Error      | Error Toggle     | DCU Toggle         | Key       | Nominal Max | Nominal Min | Error Max | Error Min |
+| Error      | Error Toggle     | DCU Toggle         | State Key | Nominal Max | Nominal Min | Error Max | Error Min |
 | ---------- | ---------------- | ------------------ | --------- | ----------- | ----------- | --------- | --------- |
 | Heart Rate | Fan Error (true) | Fan Switch (false) | heart_bpm | 93          | 85          | 120       | 114       |
 | Suit Pressure | Pump Error (true) | Pump (false)   | p_suit    | 4.0         | 3.92        | 2.5       | 1.75      |
