@@ -56,13 +56,15 @@
     }
 
     var defCoords = {
-        latitude = 29.5650733,
-        longitude = -95.0810974
+        latitude: 29.5650733,
+        longitude: -95.0810974
     }
 
     var apiUrl = "http://localhost:8080/api/";
     function GetMap() {
-        map = new Microsoft.Maps.Map('#myMap', {});
+        map = new Microsoft.Maps.Map('#myMap', {
+            mapTypeId: Microsoft.Maps.MapTypeId.canvasDark
+        });
 
         //Add a standard red pushpin that doesn't have dragging enabled.        
         if(navigator.geolocation) {
