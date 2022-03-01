@@ -40,6 +40,10 @@ module.exports = (sequelize) => {
             allowNull: true,
 			type: DataTypes.STRING
         },
+        condition_state: {
+            allowNull: true,
+			type: DataTypes.STRING
+        },
         vmc_txt: {
             allowNull: true,
 			type: DataTypes.STRING
