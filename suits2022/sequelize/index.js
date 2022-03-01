@@ -20,6 +20,7 @@ const sequelize = new Sequelize({
 
 const modelDefiners = [
 	require('./models/location.model'),
+	require('./models/lsar.model'),
 	require('./models/role.model.js'),
 	require('./models/room.model'),
 	require('./models/simulationcontrol.model'),
