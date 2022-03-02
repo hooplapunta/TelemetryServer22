@@ -14,6 +14,7 @@ module.exports = (sequelize) => {
 		},
         user: {
             allowNull: false,
+			unique: true,
             type: DataTypes.INTEGER
         },
 		room: {
