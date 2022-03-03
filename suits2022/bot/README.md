@@ -1,5 +1,5 @@
 # SUITS TSS (Telemetry Stream Server) BOT 
-## WiP  
+## _WiP_  
 
 This utility allows testing of the TSS in a multi-room / multi-tenant environment. As of this writing, the BOT creates 10 unique users
 assigned to individual (fixed) rooms. Only 2 rooms have their EVA state stream enabled. 
@@ -23,7 +23,7 @@ __Terms__
 11. TS EVA stream- first few records are printed in the cnsl.
 
 ### Setting Up
-1. Make sure the TSS is setup and an full operational. You should follow the README in "suits2022".
+1. Make sure the TSS is setup and fully operational. You should follow the README in the "suits2022" root directory if not.
 2. Change directory to suits2022/bot
 ``` bash
 $ cd ./bot
@@ -32,8 +32,8 @@ $ cd ./bot
 ``` bash
 $ npm i
 ```
-4. Start the TSS. (Follow the guide in the suits2022 README)
-5. Start the BOT:
+4. Open a new terminal window, navigate to the suits2022 root and start the TSS. (Follow the guide in the suits2022 README)
+5. Go back to the bot terminal window and start the BOT:
 ``` bash
 $ node run.js
 ```
