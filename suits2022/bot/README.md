@@ -1,4 +1,5 @@
-# TSS (Telemetry Stream Server) BOT
+# SUITS TSS (Telemetry Stream Server) BOT 
+## WiP  
 
 This utility allows testing of the TSS in a multi-room / multi-tenant environment. As of this writing, the BOT creates 10 unique users
 assigned to individual (fixed) rooms. Only 2 rooms have their EVA state stream enabled. 
