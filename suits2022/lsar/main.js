@@ -54,9 +54,17 @@
         username: 'LSAR' + Math.floor(Math.random() * (10000 - 999 + 1) + 9999),
         room: 1
     }
+
+    var defCoords = {
+        latitude: 29.5650733,
+        longitude: -95.0810974
+    }
+
     var apiUrl = "http://localhost:8080/api/";
     function GetMap() {
-        map = new Microsoft.Maps.Map('#myMap', {});
+        map = new Microsoft.Maps.Map('#myMap', {
+            mapTypeId: Microsoft.Maps.MapTypeId.canvasDark
+        });
 
         //Add a standard red pushpin that doesn't have dragging enabled.        
         if(navigator.geolocation) {
@@ -84,6 +92,14 @@
         } else {
             alert("Sorry, your browser does not support HTML5 geolocation.");
         }          
+    }
+
+    function LocationWriteLocal() {
+        
+    }
+
+    function LocationGetLocal() {
+
     }
 
     function updateFormValues() {

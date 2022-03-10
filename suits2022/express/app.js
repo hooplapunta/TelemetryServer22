@@ -42,6 +42,10 @@ app.get('/', (req, res) => {
 	`);
 });
 
+app.get('/conntest', (req, res) => {
+	res.status(200).send({ ok: true, time: new Date() });
+});
+
 // We define the standard REST APIs for each route (if they exist).
 for (const [routeName, routeController] of Object.entries(routes)) {
 
@@ -67,6 +71,14 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 			makeHandlerAwareOfAsyncErrors(routeController.failureSim));
 	}
 
+	// Commander Stuff
+	if(routeController.getAllRoomsWithUsers) {
+		app.get(
+			`/api/${routeName}/cmdr/getusers`, 
+			makeHandlerAwareOfAsyncErrors(routeController.getAllRoomsWithUsers));
+	}
+	// End Commander Stuff
+
 
 	if (routeController.getAll) {
 		app.get(
@@ -80,12 +92,20 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 			makeHandlerAwareOfAsyncErrors(routeController.getById)
 		);
 	}
+	if (routeController.getByName) {
+		app.get(
+			`/api/${routeName}/user/:username`,
+			makeHandlerAwareOfAsyncErrors(routeController.getByName)
+		);
+	}
+	
 	if(routeController.getByRoomId) {
 		app.get(
 			`/api/${routeName}/room/:room`,
 			makeHandlerAwareOfAsyncErrors(routeController.getByRoomId)
 		)
 	}
+
 	if(routeController.getByUserId) {
 		app.get(
 			`/api/${routeName}/user/:user`,

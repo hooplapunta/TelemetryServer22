@@ -6,6 +6,7 @@ sims = [];
 
 async function commandSim(req, res) {
 	console.log(`Room: ${req.params.room} Event: ${req.params.event}`);
+
 	if(req.params.event && req.params.room) {
 
 		// Check if the sim already exists
@@ -39,6 +40,7 @@ async function commandSim(req, res) {
 
 				// Attempt to start the sim.		
 				sims.push(simInst);
+				// Start w/ 1sec delay
 				setTimeout(() => {
 					simInst.sim.start(simInst.room);
 				}, 1000);

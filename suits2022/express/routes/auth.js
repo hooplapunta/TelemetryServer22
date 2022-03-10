@@ -3,6 +3,7 @@ const { getIdParam } = require('../helpers');
 
 async function registerUser(req, res) {
 
+    console.log(req.body);
     if(req.body.username === undefined || req.body.username === '') {
         res.status(400).json({ ok: false, err: 'Username is missing or empty' });
     }
