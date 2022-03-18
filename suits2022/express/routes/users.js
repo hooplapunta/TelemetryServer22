@@ -21,6 +21,11 @@ async function getById(req, res) {
 	}
 };
 
+async function getByName(req, res) {
+	const user = await models.user.findAll({ where: { username: req.params.username } });
+	res.status(200).json(user);
+}
+
 async function create(req, res) {
 	if (req.body.id) {
 		res.status(400).send(`Bad request: ID should not be provided, since it is determined automatically by the database.`)
@@ -53,6 +58,7 @@ async function remove(req, res) {
 module.exports = {
 	getAll,
 	getById,
+	getByName,
 	getByRoomId,
 	create,
 	update,

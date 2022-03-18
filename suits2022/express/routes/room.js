@@ -6,6 +6,11 @@ async function getAll(req, res) {
 	res.status(200).json(rooms);
 };
 
+async function getAllRoomsWithUsers(req, res) {
+	const rooms = await models.room.sequelize.query(`SELECT * FROM rooms INNER JOIN users ON rooms.id = users.room`);
+	res.status(200).json(rooms[0]);
+}
+
 async function getById(req, res) {
 	const id = getIdParam(req);
 	const room = await models.room.findByPk(id);
@@ -53,6 +58,7 @@ async function remove(req, res) {
 
 module.exports = {
 	getAll,
+	getAllRoomsWithUsers,
 	getById,
 	create,
 	update,

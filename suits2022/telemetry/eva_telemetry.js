@@ -1,7 +1,5 @@
 module.exports.simulationStep = function(dt, controls, failure, oldSimState) {
 
-	console.log(failure);
-
 	const batteryPercent = batteryStep(dt, controls, oldSimState).batteryPercent
 	const t_battery = batteryStep(dt, controls, oldSimState).t_battery
 	const battery_out = batteryStep(dt, controls, oldSimState).battery_out

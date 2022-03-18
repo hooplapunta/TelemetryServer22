@@ -39,11 +39,12 @@ The SUITS Telemetry Server utilizes SQLite and an ORM (Object Relational Mapper)
 
 To run the setup, use the following command:  
 ```bash 
-# change directory to sqlite-example-database 
-$ cd sqlite-example-database/
-# using node, run the setup.js script
-$ node setup.js 
+# using node, run the setup.js script 
+$ node sqlite-example-database/setup.js 
 ```
+> *Note: Verify that the setup.js file is run from the root and not from the ./sqlite-example-database. It appears that nodejs' path will place the db at the root of the dir that setup is run from. Verify that the suitsdb/suits.sqlite is at the root of the project (the location where package.json/index.js lives).
+
+
 
 When "Done!" prints to the console, the data has been written to the database. 
 
@@ -76,6 +77,16 @@ Under "My Workspace" you should see the SUITS folder. Expand it to reveal:
     Used to register your user and join a room
 4. LSAR 
     Lunar SAR(Search and Rescue) data functions
+
+## EVA Errors
+| Error      | Error Toggle     | DCU Toggle         | State Key | Nominal Max | Nominal Min | Error Max | Error Min |
+| ---------- | ---------------- | ------------------ | --------- | ----------- | ----------- | --------- | --------- |
+| Heart Rate | Fan Error (true) | Fan Switch (false) | heart_bpm | 93          | 85          | 120       | 114       |
+| Suit Pressure | Pump Error (true) | Pump (false)   | p_suit    | 4.0         | 3.92        | 2.5       | 1.75      |
+| Fan        | fan_error (true) | fan_switch (false) | v_fan     | 40,000.0    | 39,000.0    | 55,000.0  | 45,000.0  |
+| O2 Pressure | o2_error (true) | o2_switch (false)  | p_o2      | 780         | 770         | 775       | 755       |
+| O2 Rate    | o2_error (true) | o2_switch (false)  | rate_o2    | 1           | 0.5         | 0.6       | 0.4       |
+| Batt Capacity | power_error (true) | suit_power (false) | cap_battery? | 45 | 60 | 30 | 29.4 |
 
 
 ## Quick API calls

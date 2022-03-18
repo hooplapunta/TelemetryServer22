@@ -21,9 +21,9 @@ import { DCUComponent } from '../controllers/dcu/dcu.component';
 // Socket Connection
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
-const SocketConfig: SocketIoConfig = { url: 'http://localhost:3001', options: {
-  transports: ['websocket', 'polling', 'flashsocket']
-} };
+// const SocketConfig: SocketIoConfig = { url: 'http://localhost:3001', options: {
+//   transports: ['websocket', 'polling', 'flashsocket']
+// } };
 
 const routes: Routes = [
   { path: 'uia', component: UIAComponent },
@@ -51,7 +51,7 @@ const routes: Routes = [
     MDBBootstrapModule.forRoot(),
     NgbModule.forRoot(),
     RouterModule.forRoot(routes),
-    SocketIoModule.forRoot(SocketConfig),
+    // SocketIoModule.forRoot(SocketConfig),
     ModalModule.forRoot(),
     GaugeModule.forRoot()
   ],

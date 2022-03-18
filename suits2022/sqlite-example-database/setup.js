@@ -34,10 +34,10 @@ async function reset() {
 	await sequelize.sync({ force: true });
 
 	await sequelize.models.user.bulkCreate([
-		{ username: 'jack-sparrow' },
-		{ username: 'white-beard' },
-		{ username: 'black-beard' },
-		{ username: 'brown-beard' },
+		// { username: 'jack-sparrow' },
+		// { username: 'white-beard' },
+		// { username: 'black-beard' },
+		// { username: 'brown-beard' },
 	]);
 
 	await sequelize.models.room.bulkCreate(roomList);
