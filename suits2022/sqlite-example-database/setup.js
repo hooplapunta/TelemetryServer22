@@ -40,6 +40,10 @@ async function reset() {
 		// { username: 'brown-beard' },
 	]);
 
+	await sequelize.models.lsar.bulkCreate([
+
+	]);
+
 	await sequelize.models.room.bulkCreate(roomList);
 
 	// Create a new data set for each room	
