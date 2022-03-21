@@ -5,6 +5,7 @@ const cors = require('cors');
 const routes = {
 	auth: require('./routes/auth'),
 	locations: require('./routes/location'),
+	lsar: require('./routes/lsar'),
 	roles: require('./routes/role'),
 	rooms: require('./routes/room'),
 	users: require('./routes/users'),
