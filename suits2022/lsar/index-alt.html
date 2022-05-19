@@ -146,14 +146,15 @@
                             </div>
                         </div>
                     </div>        
-                    <button type="button" id="sendLoc" onclick="UpdatePostion()" class="btn btn-primary">Update Position</button>
+                    <button type="button" id="sendLoc" onclick="UpdatePostion()" class="btn btn-primary"> (1) Update Position</button>
                     <p id="updateUserWarn" style="color: red; font-size: smaller;"><i class="icofont-warning-alt"></i> You must update your user info before proceeding!</p>
 
                     <div class="row">
                         <label class="form-label">Position Info</label>
                         <hr style="color: whitesmoke;"/>
                         <div class="col-12">
-                            <button type="button" id="sendLoc" onclick="UpdatePostion()" class="btn btn-warning"><i class="icofont-sound-wave"></i> Send LSAR Alert</button>
+                            <p id="updateUserWarn" style="color: red; font-size: smaller;"><i class="icofont-warning-alt"></i> Update Position above before sending LSAR Alert.</p>
+                            <button type="button" id="sendLoc" onclick="sendLSARMsg()" class="btn btn-warning"><i class="icofont-sound-wave"></i> (2) Send LSAR Alert</button>
                         </div>
                     </div>                    
                   </form>
@@ -174,6 +175,7 @@
     //  </script>
     <script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
     <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Au51iyab6y1RrBz0YeUQMDrc85NC22YR25ofO-xJ1mpep6yxnzF6MHfsFG_1zcCK' async defer></script>
+    <script src="./vendor/moment.js"></script>
     <script src="./main.js"></script>
     <!-- <script type='text/javascript' 
     src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer>

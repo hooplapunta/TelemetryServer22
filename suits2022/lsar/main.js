@@ -66,6 +66,13 @@
             mapTypeId: Microsoft.Maps.MapTypeId.canvasDark
         });
 
+        // Set LSAR common location
+        // var lsarCommon = new Microsoft.Maps.Polygon([
+        //     new Microsoft.Maps.Location(center.latitude - 0.05, center.longitude - 0.05),
+        //     new Microsoft.Maps.Location(center.latitude + 0.01, center.longitude - 0.05),
+        //     new Microsoft.Maps.Location(center.latitude + 0.01, center.longitude + 0.05)], { fillColor: 'yellow', strokeColor: 'orange', strokeThickness: 5, strokeDashArray: [1, 2, 5, 10] });
+        // map.entities.push(lsarCommon);
+
         //Add a standard red pushpin that doesn't have dragging enabled.        
         if(navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -186,6 +193,35 @@
                 }
             });
         }
+    }
+
+    function sendLSARMsg() {
+        let LSARMsg = {};
+        LSARMsg.sender = LSARUser.id;
+        LSARMsg.room = LSARUser.room;
+        LSARMsg.time = new Moment(Date()).format('YYYY-MM-DD HH:mm:ss');
+        LSARMsg.priority_tag = "HIGH";
+        LSARMsg.encoded_lat = LSARCoords.latitude.toString();
+        LSARMsg.encoded_lon = LSARCoords.longitude.toString();
+        LSARMsg.pnt_source = "SURFACE";
+        LSARMsg.condition_state = "BAD";
+        LSARMsg.vmc_txt = "I Need assistance";
+        LSARMsg.tac_sn = "0000111" + LSARUser.id;
+        LSARMsg.cntry_code = "366";
+        LSARMsg.homing_dvc_stat = "HOMING",
+        LSARMsg.ret_lnk_stat = "YES",
+        LSARMsg.test_proto = "NON-TEST",
+        LSARMsg.vessel_id = "NA",
+        LSARMsg.beacon_type = "010"
+
+        $.ajax({
+            url: apiUrl + 'lsar',
+            type: 'post',
+            data: LSARMsg,
+            success: (response) => {
+                alert(`LSAR Sent to Room: ${LSARUser.room}`);
+            }
+        });
     }
 
     function GetRooms() {
